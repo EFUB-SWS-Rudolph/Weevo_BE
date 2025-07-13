@@ -35,6 +35,6 @@ public class InfoRequest {
     @Schema(description = "(선택사항)본인의 재능(최대 3가지 선택)", example = "[1,2,3]")
     private List<Long> talent;
 
-    @Schema(description = "본인이 관심있는 분야(최대 3가지 선택)", example = "[4,5,6]")
+    @Schema(description = "(선택사항)본인이 관심있는 분야(최대 3가지 선택)", example = "[4,5,6]")
     private List<Long> interestField;
 }
