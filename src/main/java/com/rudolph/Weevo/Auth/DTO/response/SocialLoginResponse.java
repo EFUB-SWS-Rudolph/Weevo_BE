@@ -8,14 +8,20 @@ import lombok.Getter;
 @Schema(description = "소셜 로그인 응답 dto")
 public class SocialLoginResponse {
 
-    @Schema(description = "사용자 이메일", example = "user@ewha.ac.kr")
-    private String email;
+    @Schema(description = "JWT access Token", example = "asdfgh")
+    private String accessToken;
 
-    @Schema(description = "최초 회원가입 여부 (true = 추가정보 입력 필요)", example = "true")
-    private boolean isNewUser;
+    @Schema(description = "JWT Refresh Token", example = "ghaiehgo")
+    private String refreshToken;
 
-    public SocialLoginResponse(String email, boolean isNewUser){
-        this.email= email;
-        this.isNewUser = isNewUser;
+    @Schema(description = "최초 회원가입 여부", example = "true")
+    private boolean isNewMember;
+
+    public SocialLoginResponse(){}
+
+    public SocialLoginResponse(String accessToken, String refreshToken, boolean isNewMember){
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.isNewMember = isNewMember;
     }
 }
