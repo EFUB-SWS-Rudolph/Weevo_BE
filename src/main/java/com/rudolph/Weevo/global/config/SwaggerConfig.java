@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.config;
+package com.rudolph.Weevo.global.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
