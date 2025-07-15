@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.notification;
+package com.rudolph.Weevo.notification.domain;
 
-import com.rudolph.Weevo.notification.enums.NotiType;
+import com.rudolph.Weevo.notification.domain.enums.NotiType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
