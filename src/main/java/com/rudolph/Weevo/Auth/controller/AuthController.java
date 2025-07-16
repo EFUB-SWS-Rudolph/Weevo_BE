@@ -1,7 +1,6 @@
 package com.rudolph.Weevo.Auth.controller;
 
 import com.rudolph.Weevo.Auth.dto.response.ErrorResponse;
-import com.rudolph.Weevo.Auth.dto.response.SocialLoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,57 +13,42 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login")
-@Tag(name = "Auth", description = "소셜 로그인 관련 api")
+@Tag(name = "Auth", description = "소셜 로그인 관련 API")
 public class AuthController {
 
-    //소셜 로그인 처리
     @Operation(
             summary = "소셜 로그인 (카카오, 구글)",
-            description = "소셜 로그인 제공자로부터 인가 코드를 받아 우리 서비스 JWT 토큰을 발급합니다."
-                    + "최초 회원가입인지 여부도 함께 반환합니다."
-                    + "provider에는 kakao와 google이 있습니다."
+            description = """
+                    소셜 로그인 시작을 위해 아래 URL로 GET 요청을 보냅니다.
+                    
+                    **주의:** 실제 로그인은 Spring Security OAuth2가 리다이렉트로 처리하며,
+                    이 API는 실제 토큰 발급용이 아니라 문서화용 dummy 엔드포인트입니다.
+                    
+                    - 호출 URL: /oauth2/authorization/{provider}
+                    - provider 값:
+                        - kakao
+                        - google
+                    - 소셜 로그인 성공 시, 서버는 다음 형식으로 프론트로 리디렉트합니다:
+                    
+                    ```
+                    ${JWT_REDIRECT}?accessToken={accessToken}&refreshToken={refreshToken}&isFirst={true|false}
+                    ```
+                    """
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
-                    description = "소로그인 성공 및 토큰 발급",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = SocialLoginResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "잘못된 인가 코드",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "서버 오류",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
-                    )
+                    responseCode = "302",
+                    description = "소셜 로그인 제공자로 리디렉트됨"
             )
     })
     @GetMapping("/{provider}")
-    public ResponseEntity<SocialLoginResponse> socialLogin(
-            @Parameter(description = "소셜 로그인 제공자 (kakao. google)", example = "kakao")
-            @PathVariable String provider,
-
-            @Parameter(description = "소셜 로그인 인가 코드", example = "abc123")
-            @RequestParam String code
-    ){
-        //swagger 문서용 controller
-        return ResponseEntity.ok(new SocialLoginResponse(
-                "jwt-access-token",
-                "jwt refresh-token",
-                true
-        ));
+    public ResponseEntity<Void> socialLogin(
+            @Parameter(description = "소셜 로그인 제공자 (kakao, google)", example = "kakao")
+            @PathVariable String provider
+    ) {
+        // Swagger용 dummy 메서드
+        return ResponseEntity.status(302).build();
     }
 
-
 }
+
