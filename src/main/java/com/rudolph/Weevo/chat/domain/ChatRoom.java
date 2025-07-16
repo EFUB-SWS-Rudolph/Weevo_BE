@@ -22,7 +22,7 @@ public class ChatRoom {
     @Enumerated(EnumType.STRING)
     private ChatCategory category;
 
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chat> chats = new ArrayList<>();
 
 //    @ManyToOne(fetch = FetchType.EAGER)

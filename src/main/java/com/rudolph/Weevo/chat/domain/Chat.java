@@ -27,7 +27,7 @@ public class Chat {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "chat_room_id", updatable = false, nullable = false)
-    private Chat chat;
+    private ChatRoom chatRoom;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "sender_id", updatable = false, nullable = false)

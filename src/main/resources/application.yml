@@ -43,7 +43,7 @@ spring:
         provider:
 
           kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            authorization-uri: https://kauth.kakao.com/oauth/authorize #인가 코드 받기
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
@@ -56,11 +56,6 @@ spring:
     refresh_token:
       expiration_time: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME}  #일주일
 
-  rabbitmq:
-    username: ${RABBIT_USER}
-    password: ${RABBIT_PASSWORD}
-    host: localhost
-    port: 61613
 
 springdoc:
   swagger-ui:
