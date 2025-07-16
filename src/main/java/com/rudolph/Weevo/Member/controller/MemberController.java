@@ -1,8 +1,8 @@
-package com.rudolph.Weevo.Member.Controller;
+package com.rudolph.Weevo.Member.controller;
 
-import com.rudolph.Weevo.Member.DTO.request.InfoRequest;
-import com.rudolph.Weevo.Member.DTO.response.ErrorResponse;
-import com.rudolph.Weevo.Member.DTO.response.InfoResponse;
+import com.rudolph.Weevo.Member.dto.request.InfoRequest;
+import com.rudolph.Weevo.Member.dto.response.ErrorResponse;
+import com.rudolph.Weevo.Member.dto.response.InfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

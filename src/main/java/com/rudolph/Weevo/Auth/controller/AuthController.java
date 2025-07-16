@@ -1,8 +1,7 @@
-package com.rudolph.Weevo.Auth.Controller;
+package com.rudolph.Weevo.Auth.controller;
 
-import com.rudolph.Weevo.Auth.DTO.request.SocialLoginRequest;
-import com.rudolph.Weevo.Auth.DTO.response.ErrorResponse;
-import com.rudolph.Weevo.Auth.DTO.response.SocialLoginResponse;
+import com.rudolph.Weevo.Auth.dto.response.ErrorResponse;
+import com.rudolph.Weevo.Auth.dto.response.SocialLoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
