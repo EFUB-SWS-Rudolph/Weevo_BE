@@ -22,8 +22,8 @@ public class JwtUtil {
     private String SECRET_KEY;
 
     private SecretKey getSigningKey(){
-        byte[] ketBytes = Decoders.BASE64.decode(this.SECRET_KEY);
-        return Keys.hmacShaKeyFor(ketBytes);
+        byte[] keyBytes = Decoders.BASE64.decode(this.SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     //엑세스 토큰을 발급하는 메서드
@@ -38,12 +38,12 @@ public class JwtUtil {
                 .compact();
     }
 
-    //리프레쉬 토큰을 발금하는 메서드
+    //리프레쉬 토큰을 발급하는 메서드
     public String generateRefreshToken(UUID memberId, Long expirationMillis){
         log.info("리프레쉬 토큰이 발급되었습니다.");
 
         return Jwts.builder()
-                .claim("memerId", memberId.toString())
+                .claim("memberId", memberId.toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis()+expirationMillis))
                 .signWith(this.getSigningKey())

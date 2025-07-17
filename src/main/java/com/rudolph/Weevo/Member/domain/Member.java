@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.Member.domain;
 
+import com.rudolph.Weevo.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @Table(name = "members")
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +35,4 @@ public class Member {
     @Column(name = "provider_id", nullable = false, length = 50) //kakao에서 이메일을 받을 수 없으므로 providerId를 통해 유저 구분
     private String providerId;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, length = 20)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", length = 20)
-    private LocalDateTime updatedAt;
 }

@@ -2,6 +2,7 @@ package com.rudolph.Weevo.global.config;
 
 import com.rudolph.Weevo.global.handler.OAuthLoginFailureHandler;
 import com.rudolph.Weevo.global.handler.OAuthLoginSuccessHandler;
+import com.rudolph.Weevo.global.util.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -23,6 +25,7 @@ public class SecurityConfig {
 
     private final OAuthLoginSuccessHandler oAuthLoginSuccessHandler;
     private final OAuthLoginFailureHandler oAuthLoginFailureHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     //CORS 설정
     CorsConfigurationSource corsConfigurationSource(){
@@ -47,7 +50,8 @@ public class SecurityConfig {
                         oauth
                                 .successHandler(oAuthLoginSuccessHandler)
                                 .failureHandler(oAuthLoginFailureHandler)
-                );
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 

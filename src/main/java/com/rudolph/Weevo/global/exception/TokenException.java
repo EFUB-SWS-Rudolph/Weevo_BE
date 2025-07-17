@@ -1,13 +1,15 @@
 package com.rudolph.Weevo.global.exception;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class TokenException extends RuntimeException{
-    private final TokenErrorResult  errorResult;
+    private final TokenErrorResult  tokenErrorResult;
 
-    public TokenException(TokenErrorResult errorResult){
-        super(errorResult.getMessage());
-        this.errorResult = errorResult;
-    }
+  @Override
+    public String getMessage(){
+      return tokenErrorResult.getMessage();
+  }
 }

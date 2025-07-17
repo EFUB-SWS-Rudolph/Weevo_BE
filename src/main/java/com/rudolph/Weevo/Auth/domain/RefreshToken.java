@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.Auth.domain;
 
+import com.rudolph.Weevo.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @Table(name = "refresh_tokens")
-public class RefreshToken {
+public class RefreshToken extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.Auth.dto.response;
+package com.rudolph.Weevo.global.common.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
