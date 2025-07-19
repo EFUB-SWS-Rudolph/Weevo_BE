@@ -1,15 +1,17 @@
 package com.rudolph.Weevo.chat.domain;
 
+import com.rudolph.Weevo.member.domain.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Chat {
 
     @Id
@@ -19,6 +21,7 @@ public class Chat {
 
     private String content;
 
+    @CreatedDate
     @Column(name = "sent_at")
     private LocalDateTime sentAt;
 
@@ -27,13 +30,13 @@ public class Chat {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "chat_room_id", updatable = false, nullable = false)
-    private Chat chat;
+    private ChatRoom chatRoom;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "sender_id", updatable = false, nullable = false)
-//    private Member sender;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "receiver_id", updatable = false, nullable = false)
-//    private Member receiver;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id", updatable = false, nullable = false)
+    private Member sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id", updatable = false, nullable = false)
+    private Member receiver;
 }

@@ -1,17 +1,19 @@
 package com.rudolph.Weevo.chat.domain;
 
 import com.rudolph.Weevo.chat.domain.enums.ChatCategory;
+import com.rudolph.Weevo.course.domain.Course;
+import com.rudolph.Weevo.member.domain.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ChatRoom {
 
     @Id
@@ -22,10 +24,19 @@ public class ChatRoom {
     @Enumerated(EnumType.STRING)
     private ChatCategory category;
 
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chat> chats = new ArrayList<>();
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "course_id", updatable = false, nullable = false)
-//    private Course course;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "course_id", updatable = false, nullable = false)
+    private Course course;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id", updatable = false, nullable = false)
+    private Member sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id", updatable = false, nullable = false)
+    private Member receiver;
 }
