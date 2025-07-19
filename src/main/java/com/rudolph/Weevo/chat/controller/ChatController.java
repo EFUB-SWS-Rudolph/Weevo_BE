@@ -49,4 +49,11 @@ public class ChatController {
         ChatMessageResponseDto responseDto = chatService.getMessages(chatRoomId, page, size);
         return ResponseEntity.ok(responseDto);
     }
+
+    // 채팅방 나가기
+    @DeleteMapping("/rooms/{chatRoomId}")
+    public ResponseEntity<Void> leaveChatRoom(@PathVariable Long chatRoomId){
+        chatService.leaveChatRoom(chatRoomId);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -2,26 +2,27 @@ package com.rudolph.Weevo.chat.service;
 
 import com.rudolph.Weevo.chat.domain.Chat;
 import com.rudolph.Weevo.chat.domain.ChatRoom;
-import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import com.rudolph.Weevo.chat.dto.response.ChatMessageResponseDto;
 import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.chat.repository.ChatRoomRepository;
 import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ChatService {
 
+    private final MemberRepository memberRepository;
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
 
@@ -46,6 +47,8 @@ public class ChatService {
 //        return chatRepository.save(chat);
 //    }
 
+    // 채팅방 내 메세지 읽어오기
+    @Transactional(readOnly = true)
     public ChatMessageResponseDto getMessages(Long chatRoomId, int page, int size) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
@@ -65,5 +68,17 @@ public class ChatService {
                 chatRoom.getCourse(),
                 chatMessages
         );
+    }
+
+    // 채팅방 나가기
+    public void leaveChatRoom(Long chatRoomId) {
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                        .orElseThrow(()-> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
+        if (!member.getId().equals(chatRoom.getSender().getId()) && !member.getId().equals(chatRoom.getReceiver().getId())) {
+            throw new IllegalArgumentException("채팅방을 삭제할 권한이 없습니다.");
+        }
+        chatRoomRepository.delete(chatRoom);
     }
 }
