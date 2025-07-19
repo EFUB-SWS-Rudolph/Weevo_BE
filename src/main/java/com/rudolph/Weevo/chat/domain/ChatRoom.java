@@ -39,4 +39,20 @@ public class ChatRoom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", updatable = false, nullable = false)
     private Member receiver;
+
+    @Builder.Default
+    @Column(name = "sender_exited")
+    private boolean senderExited = false;
+
+    @Builder.Default
+    @Column(name = "receiver_exited")
+    private boolean receiverExited = false;
+
+    public void setSenderExited() {
+        this.senderExited = true;
+    }
+
+    public void setReceiverExited() {
+        this.receiverExited = true;
+    }
 }

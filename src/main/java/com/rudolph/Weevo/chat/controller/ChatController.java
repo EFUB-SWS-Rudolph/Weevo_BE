@@ -53,7 +53,7 @@ public class ChatController {
     // 채팅방 나가기
     @DeleteMapping("/rooms/{chatRoomId}")
     public ResponseEntity<Void> leaveChatRoom(@PathVariable Long chatRoomId){
-        chatService.leaveChatRoom(chatRoomId);
+        chatRoomService.leaveChatRoom(chatRoomId);
         return ResponseEntity.noContent().build();
     }
 }

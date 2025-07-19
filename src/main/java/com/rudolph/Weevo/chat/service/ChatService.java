@@ -69,16 +69,4 @@ public class ChatService {
                 chatMessages
         );
     }
-
-    // 채팅방 나가기
-    public void leaveChatRoom(Long chatRoomId) {
-        Member member = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                        .orElseThrow(()-> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
-        if (!member.getId().equals(chatRoom.getSender().getId()) && !member.getId().equals(chatRoom.getReceiver().getId())) {
-            throw new IllegalArgumentException("채팅방을 삭제할 권한이 없습니다.");
-        }
-        chatRoomRepository.delete(chatRoom);
-    }
 }
