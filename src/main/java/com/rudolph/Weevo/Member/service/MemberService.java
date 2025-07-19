@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+import com.rudolph.Weevo.Member.dto.response.UserProfileDto;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -49,5 +52,12 @@ public class MemberService {
                 interestTags,
                 talentTags
         );
+    }
+}
+
+    @Transactional(readOnly = true)         //프로필 정보 조회
+    public UserProfileDto getMyProfile(Long userId) {
+        Member member = memberRepository.findById(userId);
+
     }
 }

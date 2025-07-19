@@ -1,11 +1,11 @@
 package com.rudolph.Weevo.Member.domain;
 
+import com.rudolph.Weevo.course.domain.Course;
+import com.rudolph.Weevo.course.domain.MemberCourse;
 import com.rudolph.Weevo.global.domain.BaseEntity;
 import com.rudolph.Weevo.tag.domain.Tag;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +38,7 @@ public class Member extends BaseEntity {
     @Column(name = "provider_id", nullable = false, length = 50) //kakao에서 이메일을 받을 수 없으므로 providerId를 통해 유저 구분
     private String providerId;
 
+  
     private String studentId;
     private String department;
     private String college;
@@ -71,5 +72,11 @@ public class Member extends BaseEntity {
         this.interestTags = interestTags;
         this.talentTags = talentTags;
     }
+
+    @OneToMany(mappedBy = "teacher")        //강의 개설 user:course = 1:N
+    private List<Course> courses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")         //유저:강의 = N:M (수강)
+    private List<MemberCourse> memberCourses = new ArrayList<>();
 
 }
