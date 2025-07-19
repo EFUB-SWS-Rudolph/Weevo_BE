@@ -29,7 +29,7 @@ public class ChatRoom {
     private List<Chat> chats = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "course_id", updatable = false, nullable = false)
+    @JoinColumn(name = "course_id", updatable = false)
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)

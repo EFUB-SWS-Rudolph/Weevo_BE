@@ -65,20 +65,4 @@ public class ChatService {
                 chatMessages
         );
     }
-
-    // 메세지 읽음 처리
-    public void markMessagesAsRead(Long chatRoomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
-
-        Member member = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        if (!member.getId().equals(chatRoom.getSender().getId()) &&
-                !member.getId().equals(chatRoom.getReceiver().getId())) {
-            throw new IllegalArgumentException("채팅방에 접근할 권한이 없습니다.");
-        }
-
-        chatRepository.markAllUnreadMessagesAsRead(chatRoomId, member.getId());
-    }
 }

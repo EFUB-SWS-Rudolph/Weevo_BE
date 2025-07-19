@@ -32,17 +32,12 @@ public class ChatRoomService {
         Member sender = memberRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        Member receiver = memberRepository.findById(request.getOpponentId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 수신자입니다."));
+        Member receiver = findReceiver(request.getOpponentId());
 
-        Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다."));
-
+        Course course = null;
         ChatCategory category;
         if (request.getCourseId() != null) {
-            course = courseRepository.findById(request.getCourseId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다."));
-
+            course = findCourse(request.getCourseId());
             category = ChatCategory.valueOf(course.getCourseType().name());
         } else {
             category = ChatCategory.COFFEECHAT;
@@ -95,15 +90,23 @@ public class ChatRoomService {
         }
     }
 
+    // 메세지 읽음 처리
+    public void markMessagesAsRead(Long chatRoomId) {
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        ChatRoom chatRoom = findChatRoom(chatRoomId);
+        validateChatRoomAccess(chatRoom, member.getId());
+
+        chatRepository.markAllUnreadMessagesAsRead(chatRoomId, member.getId());
+    }
+
     // 채팅방 나가기
     public void leaveChatRoom(Long chatRoomId) {
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(()-> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
-        if (!member.getId().equals(chatRoom.getSender().getId()) && !member.getId().equals(chatRoom.getReceiver().getId())) {
-            throw new IllegalArgumentException("채팅방을 삭제할 권한이 없습니다.");
-        }
+
+        ChatRoom chatRoom = findChatRoom(chatRoomId);
+        validateChatRoomAccess(chatRoom, member.getId());
 
         if (member.getId().equals(chatRoom.getSender().getId())) {
             chatRoom.setSenderExited();
@@ -114,5 +117,30 @@ public class ChatRoomService {
         if (chatRoom.isSenderExited() && chatRoom.isReceiverExited()) {
             chatRoomRepository.delete(chatRoom);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ChatRoom findChatRoom(Long chatRoomId){
+        return chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(()-> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
+    }
+
+    // 채팅방 접근 권한 확인
+    @Transactional(readOnly = true)
+    private void validateChatRoomAccess(ChatRoom chatRoom, Long memberId) {
+        if (!chatRoom.getSender().getId().equals(memberId) &&
+                !chatRoom.getReceiver().getId().equals(memberId)) {
+            throw new IllegalArgumentException("채팅방에 접근할 권한이 없습니다.");
+        }
+    }
+
+    private Member findReceiver(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다. ID = " + id));
+    }
+
+    private Course findCourse(Long id) {
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다. ID = " + id));
     }
 }
