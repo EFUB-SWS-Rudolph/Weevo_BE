@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -78,7 +77,7 @@ public class ChatRoomService {
                 .map(chatRoom -> {
                     Member opponent = findOpponent(chatRoom, member.getId());
                     Chat lastChat = chatRepository.findTopByChatRoomOrderBySentAtDesc(chatRoom);
-                    int unreadCount = chatRepository.countByChatRoomAndReceiverIdAndIsReadFalse(chatRoom, member.getId());
+                    int unreadCount = chatRepository.countUnreadMessages(chatRoom, member.getId());
 
                     return ChatRoomSummary.from(chatRoom, opponent, lastChat, unreadCount);
                 })

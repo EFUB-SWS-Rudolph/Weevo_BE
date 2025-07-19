@@ -41,6 +41,13 @@ public class ChatController {
         return ResponseEntity.ok(rooms);
     }
 
+    // 메세지 읽음 처리
+    @PatchMapping("/rooms/{chatRoomId}/read")
+    public ResponseEntity<Void> markMessagesAsRead(@PathVariable Long chatRoomId) {
+        chatService.markMessagesAsRead(chatRoomId);
+        return ResponseEntity.noContent().build();
+    }
+
     // 메세지 목록 조회
     @GetMapping("/{chatRoomId}/messages")
     public ResponseEntity<ChatMessageResponseDto> getMessages(@PathVariable Long chatRoomId,

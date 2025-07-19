@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Chat {
 
@@ -35,8 +37,4 @@ public class Chat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", updatable = false, nullable = false)
     private Member sender;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", updatable = false, nullable = false)
-    private Member receiver;
 }

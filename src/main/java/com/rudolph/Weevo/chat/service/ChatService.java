@@ -2,6 +2,7 @@ package com.rudolph.Weevo.chat.service;
 
 import com.rudolph.Weevo.chat.domain.Chat;
 import com.rudolph.Weevo.chat.domain.ChatRoom;
+import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import com.rudolph.Weevo.chat.dto.response.ChatMessageResponseDto;
 import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.chat.repository.ChatRoomRepository;
@@ -26,26 +27,21 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
 
-//    public Chat saveMessage(ChatMessage message) {
-//        ChatRoom chatRoom = chatRoomRepository.findById(message.getChatRoomId())
-//                .orElseThrow(() -> new RuntimeException("ChatRoom not found")); // 추후 에러 코드 수정
-//
-//        Member sender = memberRepository.findById(message.getSenderId())
-//                .orElseThrow(...); 아 이건 현재 인증객체로 가져오기
-//
-//        Member receiver = memberRepository.findById(message.getReceiverId())
-//                .orElseThrow(...);
-//
-//        Chat chat = Chat.builder()
-//                .chatRoom(chatRoom)
-//                .sender(sender)
-//                .receiver(receiver)
-//                .content(message.getContent())
-//                .sentAt(LocalDateTime.now())
-//                .isRead(false)
-//                .build();
-//        return chatRepository.save(chat);
-//    }
+    public void saveMessage(ChatMessage message) {
+        ChatRoom chatRoom = chatRoomRepository.findById(message.getChatRoomId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+
+        Member sender = memberRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        Chat chat = Chat.builder()
+                .chatRoom(chatRoom)
+                .sender(sender)
+                .content(message.getContent())
+                .isRead(false)
+                .build();
+        chatRepository.save(chat);
+    }
 
     // 채팅방 내 메세지 읽어오기
     @Transactional(readOnly = true)
@@ -68,5 +64,21 @@ public class ChatService {
                 chatRoom.getCourse(),
                 chatMessages
         );
+    }
+
+    // 메세지 읽음 처리
+    public void markMessagesAsRead(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (!member.getId().equals(chatRoom.getSender().getId()) &&
+                !member.getId().equals(chatRoom.getReceiver().getId())) {
+            throw new IllegalArgumentException("채팅방에 접근할 권한이 없습니다.");
+        }
+
+        chatRepository.markAllUnreadMessagesAsRead(chatRoomId, member.getId());
     }
 }

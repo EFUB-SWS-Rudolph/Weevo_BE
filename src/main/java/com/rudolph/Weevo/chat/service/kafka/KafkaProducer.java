@@ -21,7 +21,6 @@ public class KafkaProducer {
 
     public void sendMessage(ChatMessage message) {
         log.info("Produce message: {}", message.getContent());
-//        chatService.saveMessage(message);
         kafkaTemplate.send(topicName, message);
     }
 }
