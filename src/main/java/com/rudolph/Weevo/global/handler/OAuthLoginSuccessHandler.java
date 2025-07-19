@@ -76,6 +76,21 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                     .providerId(providerId)
                     .build();
             memberRepository.save(member);
+
+            //토큰 발급
+            String refreshToken = jwtUtil.generateRefreshToken(member.getMemberId(),REFRESH_TOKEN_EXPIRATION_TIME);
+            refreshTokenRepository.save(
+                    RefreshToken.builder()
+                    .memberId(member.getMemberId())
+                            .token(refreshToken)
+                            .build()
+            );
+            String accessToken = jwtUtil.generateAccessToken(member.getMemberId(), ACCESS_TOKEN_EXPIRATION_TIME);
+
+            //추가 정보 입력 페이지로 리다이렉트
+            String redirectUri = "http://localhost:3000/signup/additional?accessToken=" + accessToken;
+            getRedirectStrategy().sendRedirect(request, response, redirectUri);
+            return; // 기존 유저 코드가 실행되지 않게 함
         } else {
             // 기존 유저인경우 -> 리프레쉬 토큰 삭제
             log.info("기존 유저입니다.");
