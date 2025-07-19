@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Notification {
@@ -40,15 +42,6 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", updatable = false, nullable = false)
     private Member receiver;
-
-    @Builder
-    public Notification(String title, NotiType type, boolean isRead, Member requester, Member receiver) {
-        this.title = title;
-        this.type = type;
-        this.isRead = isRead;
-        this.requester = requester;
-        this.receiver = receiver;
-    }
 
     public void setRead() {
         this.isRead = true;
