@@ -7,8 +7,6 @@ import com.rudolph.Weevo.tag.domain.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -45,38 +43,44 @@ public class Member extends BaseEntity {
     private String email;
     private String location;
 
-    @ManyToMany
-    @JoinTable(
-            name = "member_interest_tags",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> interestTags = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberInterestTag> interestTags = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name= "member_talent_tags",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> talentTags = new ArrayList<>();
-
-    public void additionalInfo(String nickName, String studentId, String college, String department, String email, String location,
-                              List<Tag> interestTags, List<Tag> talentTags){
-        this.nickName = nickName;
-        this.studentId = studentId;
-        this.college = college;
-        this.department = department;
-        this.location = location;
-        this.email = email;
-        this.interestTags = interestTags;
-        this.talentTags = talentTags;
-    }
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberTalentTag> talentTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher")        //강의 개설 user:course = 1:N
     private List<Course> courses = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")         //유저:강의 = N:M (수강)
     private List<MemberCourse> memberCourses = new ArrayList<>();
+
+    public void additionalInfo(String nickName, String studentId, String college, String department, String email,
+                               List<Tag> interestTagList, List<Tag> talentTagList){
+        this.nickName = nickName;
+        this.studentId = studentId;
+        this.college = college;
+        this.department = department;
+        this.location = location;
+        this.email = email;
+
+        //기존 태그 초기화
+        this.interestTags.clear();
+        this.talentTags.clear();
+
+        // 새로운 중간 엔티티 생성 및 할당
+        interestTagList.forEach(tag ->
+                this.interestTags.add(MemberInterestTag.builder()
+                        .member(this)
+                        .tag(tag)
+                        .build())
+        );
+        talentTagList.forEach(tag ->
+                this.talentTags.add(MemberTalentTag.builder()
+                        .member(this)
+                        .tag(tag)
+                        .build())
+        );
+    }
 
 }

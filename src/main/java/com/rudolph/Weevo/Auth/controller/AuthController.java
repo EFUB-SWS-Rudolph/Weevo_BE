@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/oauth2/authorization")
 @Tag(name = "Auth", description = "소셜 로그인 관련 API")
 public class AuthController {
 

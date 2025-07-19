@@ -20,10 +20,6 @@ public class InfoRequest {
     private String college; //대학
     @NotBlank
     private String department; //학과
-    @NotBlank
-    private String email;
-    @NotBlank
-    private String ewhaAuthCode; // 이화인 인증 코드
 
     @Size(min = 0, max =3)
     private List<String> interestKeywords;

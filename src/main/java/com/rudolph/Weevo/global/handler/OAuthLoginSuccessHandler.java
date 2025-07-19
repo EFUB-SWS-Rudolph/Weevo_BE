@@ -61,6 +61,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         //정보 추출
         String providerId = oAuth2UserInfo.getProviderId();
         String name = oAuth2UserInfo.getName();
+        String email = oAuth2UserInfo.getEmail();
 
         Member existMember = memberRepository.findByProviderId(providerId);
         Member member;
@@ -74,6 +75,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                     .nickName(name)
                     .provider(provider)
                     .providerId(providerId)
+                    .email(email)
                     .build();
             memberRepository.save(member);
 
