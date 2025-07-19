@@ -13,11 +13,17 @@ spring:
       hibernate:
         format_sql: true
 
-  rabbitmq:
-    username: ${RABBIT_USER}
-    password: ${RABBIT_PASSWORD}
-    host: localhost
-    port: 61613
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: chat-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
 springdoc:
   swagger-ui:
@@ -25,3 +31,7 @@ springdoc:
     groups-order: DESC
     tags-sorter: alpha
     operations-sorter: method
+
+message:
+  topic:
+    name: chat.messages
