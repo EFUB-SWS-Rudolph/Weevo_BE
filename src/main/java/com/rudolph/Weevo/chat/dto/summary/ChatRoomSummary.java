@@ -19,7 +19,7 @@ public class ChatRoomSummary {
     private String courseTitle;
     private String lastMessage;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime lastMessageSentAt;
 
     private int unreadCount;

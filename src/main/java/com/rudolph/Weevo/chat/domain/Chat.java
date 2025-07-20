@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.chat.domain;
 
+import com.rudolph.Weevo.chat.domain.enums.ChatType;
 import com.rudolph.Weevo.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,6 +22,9 @@ public class Chat {
     @Column(name = "message_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    private ChatType type;
+
     private String content;
 
     @CreatedDate
@@ -35,6 +39,6 @@ public class Chat {
     private ChatRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", updatable = false, nullable = false)
+    @JoinColumn(name = "sender_id", updatable = false)
     private Member sender;
 }
