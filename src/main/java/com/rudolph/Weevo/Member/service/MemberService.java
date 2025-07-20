@@ -3,6 +3,8 @@ package com.rudolph.Weevo.Member.service;
 import com.rudolph.Weevo.Auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.Member.domain.Member;
 import com.rudolph.Weevo.Member.dto.request.InfoRequest;
+import com.rudolph.Weevo.Member.dto.response.MemberDetailResponse;
+import com.rudolph.Weevo.Member.dto.response.MemberListResponse;
 import com.rudolph.Weevo.Member.repository.MemberRepository;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
@@ -10,6 +12,7 @@ import com.rudolph.Weevo.tag.domain.Tag;
 import com.rudolph.Weevo.tag.service.TagService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +24,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final TagService tagService;
 
-    private static final String AUTH_CODE = "응뎡뎍"; // 인증 코드
+    //추가 회원 정보 가입
     @Transactional
     public void submitAdditionalInfo(CustomUserPrincipal principal, InfoRequest request){
 
@@ -46,5 +49,28 @@ public class MemberService {
                 interestTags,
                 talentTags
         );
+    }
+
+    //이화인 목록 조회
+    public List<MemberListResponse> findMembers(String nickName, String department, String college,
+                                                Boolean coffeeChat, Boolean donation, Boolean exchange,
+                                                String sortDirection){
+
+        Sort sort;
+        if ("desc".equalsIgnoreCase(sortDirection)) {
+            sort = Sort.by(Sort.Direction.DESC, "createdAt"); // 예: createdAt 기준 내림차순 정렬
+        } else {
+            sort = Sort.by(Sort.Direction.ASC, "createdAt");  // 예: createdAt 기준 오름차순 정렬
+        }
+        List<MemberListResponse> members = memberRepository.findByMembersWithFilters(nickName, department, college, coffeeChat, donation,
+                exchange, sort);
+        return members;
+    }
+
+    //이화인 개별 조회
+    public MemberDetailResponse findMemberDetail(UUID memberId){
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        return MemberDetailResponse.from(member);
     }
 }
