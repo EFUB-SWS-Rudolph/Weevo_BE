@@ -1,7 +1,6 @@
 package com.rudolph.Weevo.notification.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rudolph.Weevo.notification.domain.Notification;
 import lombok.Builder;
 import lombok.Getter;

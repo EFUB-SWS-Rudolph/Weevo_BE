@@ -4,10 +4,11 @@ import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
 import com.rudolph.Weevo.chat.dto.response.ChatMessageResponseDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomListResponseDto;
-import com.rudolph.Weevo.chat.dto.response.ChatRoomResponseDto;
+import com.rudolph.Weevo.chat.dto.response.ChatRoomStatusDto;
 import com.rudolph.Weevo.chat.service.ChatRoomService;
 import com.rudolph.Weevo.chat.service.ChatService;
 import com.rudolph.Weevo.chat.service.kafka.KafkaProducer;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,16 +29,24 @@ public class ChatController {
         producer.sendMessage(message);
     }
 
+    // 채팅방 존재 여부
+    @GetMapping("/rooms/exist")
+    public ResponseEntity<ChatRoomStatusDto> checkRoomExist(@RequestParam Long opponentId,
+                                                            @RequestParam(required = false) Long courseId) {
+        ChatRoomStatusDto responseDto = chatRoomService.checkChatRoomExist(opponentId, courseId);
+        return ResponseEntity.ok(responseDto);
+    }
+
     // 채팅방 생성
     @PostMapping("/rooms")
-    public ResponseEntity<ChatRoomResponseDto> createRoom(@RequestBody ChatRoomCreateRequestDto request) {
-        ChatRoomResponseDto responseDto = chatRoomService.createOrGetChatRoom(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    public ResponseEntity<Void> createRoom(@Valid @RequestBody ChatRoomCreateRequestDto request) {
+        chatRoomService.createChatRoom(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // 채팅방 목록 조회
     @GetMapping("/rooms")
-    public ResponseEntity<ChatRoomListResponseDto> getChatRooms(@RequestParam(required = false) String category) {
+    public ResponseEntity<ChatRoomListResponseDto> getChatRooms(@Valid @RequestParam(required = false) String category) {
         ChatRoomListResponseDto rooms = chatRoomService.getChatRooms(category);
         return ResponseEntity.ok(rooms);
     }

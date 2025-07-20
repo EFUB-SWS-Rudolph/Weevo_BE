@@ -5,12 +5,14 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ChatRoomResponseDto {
+public class ChatRoomStatusDto {
     private Long chatRoomId;
+    private boolean exists;
 
-    public static ChatRoomResponseDto from(Long chatRoomId){
-        return ChatRoomResponseDto.builder()
+    public static ChatRoomStatusDto from(Long chatRoomId, boolean status){
+        return ChatRoomStatusDto.builder()
                 .chatRoomId(chatRoomId)
+                .exists(status)
                 .build();
     }
 }

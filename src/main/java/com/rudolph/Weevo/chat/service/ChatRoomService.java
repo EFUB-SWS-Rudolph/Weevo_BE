@@ -6,7 +6,7 @@ import com.rudolph.Weevo.chat.domain.enums.ChatCategory;
 import com.rudolph.Weevo.chat.domain.enums.ChatType;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomListResponseDto;
-import com.rudolph.Weevo.chat.dto.response.ChatRoomResponseDto;
+import com.rudolph.Weevo.chat.dto.response.ChatRoomStatusDto;
 import com.rudolph.Weevo.chat.dto.summary.ChatRoomSummary;
 import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.chat.repository.ChatRoomRepository;
@@ -31,7 +31,28 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final CourseRepository courseRepository;
 
-    public ChatRoomResponseDto createOrGetChatRoom(ChatRoomCreateRequestDto request) {
+    @Transactional(readOnly = true)
+    public ChatRoomStatusDto checkChatRoomExist(Long opponentId, Long courseId) {
+        Member sender = memberRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Member receiver = findReceiver(opponentId);
+
+        Optional<ChatRoom> existingRoom;
+        if (courseId != null) {
+            Course course = findCourse(courseId);
+            existingRoom = chatRoomRepository.findCourseChatRoom(sender.getId(), receiver.getId(), course.getId());
+        } else {
+            existingRoom = chatRoomRepository.findCoffeeChatRoom(sender.getId(), receiver.getId());
+        }
+
+        if (existingRoom.isPresent()) {
+            return ChatRoomStatusDto.from(existingRoom.get().getId(), true);
+        } else {
+            return ChatRoomStatusDto.from(null, false);
+        }
+    }
+
+    public void createChatRoom(ChatRoomCreateRequestDto request) {
         Member sender = memberRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         Member receiver = findReceiver(request.getOpponentId());
@@ -46,15 +67,7 @@ public class ChatRoomService {
             category = ChatCategory.COFFEECHAT;
         }
 
-        Optional<ChatRoom> existingRoom;
-        if (course != null) {
-            existingRoom = chatRoomRepository.findCourseChatRoom(sender.getId(), receiver.getId(), course.getId());
-        } else {
-            existingRoom = chatRoomRepository.findCoffeeChatRoom(sender.getId(), receiver.getId());
-        }
-
-        ChatRoom chatRoom = existingRoom.orElseGet(() -> {
-            ChatRoom newChatRoom = ChatRoom.builder()
+        ChatRoom newChatRoom = ChatRoom.builder()
                     .category(category)
                     .course(course)
                     .sender(sender)
@@ -62,20 +75,16 @@ public class ChatRoomService {
                     .senderExited(false)
                     .receiverExited(false)
                     .build();
-            return chatRoomRepository.save(newChatRoom);
-        });
+        chatRoomRepository.save(newChatRoom);
 
-        if (existingRoom.isEmpty()) {
-            Chat chat = Chat.builder()
-                    .chatRoom(chatRoom)
+
+        Chat chat = Chat.builder()
+                    .chatRoom(newChatRoom)
                     .sender(sender)
                     .type(ChatType.CHAT)
                     .content(request.getContent())
                     .build();
-            chatRepository.save(chat);
-        }
-
-        return ChatRoomResponseDto.from(chatRoom.getId());
+        chatRepository.save(chat);
     }
 
     @Transactional(readOnly = true)
