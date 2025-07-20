@@ -4,6 +4,7 @@ import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
 import com.rudolph.Weevo.chat.dto.response.ChatMessageResponseDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomListResponseDto;
+import com.rudolph.Weevo.chat.dto.response.ChatRoomResponseDto;
 import com.rudolph.Weevo.chat.service.ChatRoomService;
 import com.rudolph.Weevo.chat.service.ChatService;
 import com.rudolph.Weevo.chat.service.kafka.KafkaProducer;
@@ -29,9 +30,9 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/rooms")
-    public ResponseEntity<String> createRoom(@RequestBody ChatRoomCreateRequestDto request) {
-        chatRoomService.createChatRoom(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body("채팅방이 생성되었습니다.");
+    public ResponseEntity<ChatRoomResponseDto> createRoom(@RequestBody ChatRoomCreateRequestDto request) {
+        ChatRoomResponseDto responseDto = chatRoomService.createOrGetChatRoom(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     // 채팅방 목록 조회

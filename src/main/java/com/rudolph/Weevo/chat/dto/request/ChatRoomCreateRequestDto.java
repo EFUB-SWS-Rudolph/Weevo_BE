@@ -6,4 +6,5 @@ import lombok.Getter;
 public class ChatRoomCreateRequestDto {
     private Long opponentId;
     private Long courseId;
+    private String content;
 }

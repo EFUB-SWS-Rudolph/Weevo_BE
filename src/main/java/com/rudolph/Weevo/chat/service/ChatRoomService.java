@@ -3,8 +3,10 @@ package com.rudolph.Weevo.chat.service;
 import com.rudolph.Weevo.chat.domain.Chat;
 import com.rudolph.Weevo.chat.domain.ChatRoom;
 import com.rudolph.Weevo.chat.domain.enums.ChatCategory;
+import com.rudolph.Weevo.chat.domain.enums.ChatType;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomListResponseDto;
+import com.rudolph.Weevo.chat.dto.response.ChatRoomResponseDto;
 import com.rudolph.Weevo.chat.dto.summary.ChatRoomSummary;
 import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.chat.repository.ChatRoomRepository;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,30 +31,51 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final CourseRepository courseRepository;
 
-    public void createChatRoom(ChatRoomCreateRequestDto request) {
+    public ChatRoomResponseDto createOrGetChatRoom(ChatRoomCreateRequestDto request) {
         Member sender = memberRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
         Member receiver = findReceiver(request.getOpponentId());
 
-        Course course = null;
+        Course course;
         ChatCategory category;
         if (request.getCourseId() != null) {
             course = findCourse(request.getCourseId());
             category = ChatCategory.valueOf(course.getCourseType().name());
         } else {
+            course = null;
             category = ChatCategory.COFFEECHAT;
         }
 
-        ChatRoom chatRoom = ChatRoom.builder()
-                .category(category)
-                .course(course)
-                .sender(sender)
-                .receiver(receiver)
-                .senderExited(false)
-                .receiverExited(false)
-                .build();
-        chatRoomRepository.save(chatRoom);
+        Optional<ChatRoom> existingRoom;
+        if (course != null) {
+            existingRoom = chatRoomRepository.findCourseChatRoom(sender.getId(), receiver.getId(), course.getId());
+        } else {
+            existingRoom = chatRoomRepository.findCoffeeChatRoom(sender.getId(), receiver.getId());
+        }
+
+        ChatRoom chatRoom = existingRoom.orElseGet(() -> {
+            ChatRoom newChatRoom = ChatRoom.builder()
+                    .category(category)
+                    .course(course)
+                    .sender(sender)
+                    .receiver(receiver)
+                    .senderExited(false)
+                    .receiverExited(false)
+                    .build();
+            return chatRoomRepository.save(newChatRoom);
+        });
+
+        if (existingRoom.isEmpty()) {
+            Chat chat = Chat.builder()
+                    .chatRoom(chatRoom)
+                    .sender(sender)
+                    .type(ChatType.CHAT)
+                    .content(request.getContent())
+                    .build();
+            chatRepository.save(chat);
+        }
+
+        return ChatRoomResponseDto.from(chatRoom.getId());
     }
 
     @Transactional(readOnly = true)
@@ -60,7 +84,6 @@ public class ChatRoomService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         List<ChatRoom> chatRoomList;
-
         if (category == null || category.isBlank()) {
             chatRoomList = chatRoomRepository.findActiveChatRoomsByMember(member.getId());
         } else {
@@ -114,6 +137,14 @@ public class ChatRoomService {
             chatRoom.setReceiverExited();
         }
 
+        Chat systemMessage = Chat.builder()
+                .chatRoom(chatRoom)
+                .sender(null)
+                .type(ChatType.SYSTEM)
+                .content(member.getName() + "님이 채팅방을 떠났습니다.")
+                .build();
+        chatRepository.save(systemMessage);
+
         if (chatRoom.isSenderExited() && chatRoom.isReceiverExited()) {
             chatRoomRepository.delete(chatRoom);
         }
@@ -127,10 +158,16 @@ public class ChatRoomService {
 
     // 채팅방 접근 권한 확인
     @Transactional(readOnly = true)
-    private void validateChatRoomAccess(ChatRoom chatRoom, Long memberId) {
-        if (!chatRoom.getSender().getId().equals(memberId) &&
-                !chatRoom.getReceiver().getId().equals(memberId)) {
+    public void validateChatRoomAccess(ChatRoom chatRoom, Long memberId) {
+        boolean isSender = chatRoom.getSender().getId().equals(memberId);
+        boolean isReceiver = chatRoom.getReceiver().getId().equals(memberId);
+
+        if (!isSender && !isReceiver) {
             throw new IllegalArgumentException("채팅방에 접근할 권한이 없습니다.");
+        }
+        if ((isSender && chatRoom.isSenderExited()) ||
+                (isReceiver && chatRoom.isReceiverExited())) {
+            throw new IllegalStateException("이미 나간 채팅방에는 접근할 수 없습니다.");
         }
     }
 

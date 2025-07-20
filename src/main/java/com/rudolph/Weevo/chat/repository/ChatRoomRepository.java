@@ -7,13 +7,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-//    @Query("SELECT cr FROM ChatRoom cr WHERE cr.sender.id = :memberId OR cr.receiver.id = :memberId")
-//    List<ChatRoom> findByMember(@Param("memberId") Long memberId);
-//
-//    @Query("SELECT cr FROM ChatRoom cr WHERE cr.category = :category AND (cr.sender.id = :memberId OR cr.receiver.id = :memberId)")
-//    List<ChatRoom> findByCategoryAndMember(@Param("category") ChatCategory category, @Param("memberId") Long memberId);
+
+    @Query("SELECT cr FROM ChatRoom cr WHERE " +
+            "cr.category = 'COFFEECHAT' AND " +
+            "((cr.sender.id = :memberAId AND cr.receiver.id = :memberBId) OR " +
+            " (cr.sender.id = :memberBId AND cr.receiver.id = :memberAId))")
+    Optional<ChatRoom> findCoffeeChatRoom(@Param("memberAId") Long memberAId,
+                                          @Param("memberBId") Long memberBId);
+
+    @Query("SELECT cr FROM ChatRoom cr WHERE " +
+            "cr.sender.id = :senderId AND cr.receiver.id = :receiverId AND cr.course.id = :courseId")
+    Optional<ChatRoom> findCourseChatRoom(@Param("senderId") Long senderId,
+                                          @Param("receiverId") Long receiverId,
+                                          @Param("courseId") Long courseId);
+
 
     @Query("""
             SELECT r FROM ChatRoom r
