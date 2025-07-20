@@ -2,6 +2,8 @@ package com.rudolph.Weevo.global.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -18,4 +20,5 @@ public class BaseEntity {
 
     @LastModifiedBy
     private LocalDateTime updatedAt;
+
 }
