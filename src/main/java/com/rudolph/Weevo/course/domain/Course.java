@@ -1,9 +1,8 @@
 package com.rudolph.Weevo.course.domain;
 
 import com.rudolph.Weevo.Member.domain.Member;
-import com.rudolph.Weevo.course.domain.enums.CourseCategory;
-import com.rudolph.Weevo.course.domain.enums.CourseStatus;
-import com.rudolph.Weevo.course.domain.enums.CourseType;
+import com.rudolph.Weevo.course.domain.enums.*;
+import com.rudolph.Weevo.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,9 +14,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Course {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Course extends BaseEntity {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private Long id;
 
@@ -26,26 +25,26 @@ public class Course {
 
     private String description;
 
-    @Column(nullable = false)
-    private LocalDate recruitStartDate;     //강의 모집 시작 날짜
+    @Column(name = "course_start_date", nullable = false)
+    private LocalDate courseStartDate;
 
-    @Column(nullable = false)
-    private LocalDate recruitEndDate;       //강의 모집 끝 날짜
-
-    @Enumerated(EnumType.STRING)
-    private CourseType courseType;      // 강의 타입 ex)'재능 기부'
+    @Column(name = "course_end_date", nullable = false)
+    private LocalDate courseEndDate;
 
     @Enumerated(EnumType.STRING)
-    private CourseCategory courseCategory;      //강의 카테고리 ex)'미술'
+    private CourseType courseType;
 
     @Enumerated(EnumType.STRING)
-    private CourseStatus courseStatus;      //강의 진행 상태
+    private CourseCategory courseCategory;
+
+    @Enumerated(EnumType.STRING)
+    private CourseCity courseCity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="teacher_id")
     private Member teacher;
 
-    @OneToMany(mappedBy = "course")     // 강의 사진들 1:N
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseImage> courseImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "course")
