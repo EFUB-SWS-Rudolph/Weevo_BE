@@ -93,7 +93,7 @@ public class CourseService {
 
     // 4) 단건 조회
     @Transactional(readOnly = true)
-    public Course findCourseById(Long courseId) {
+    public Course findCourse(Long courseId) {
         return courseRepository.findById(courseId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
     }

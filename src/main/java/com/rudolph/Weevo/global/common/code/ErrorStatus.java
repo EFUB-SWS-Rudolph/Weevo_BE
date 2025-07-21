@@ -28,8 +28,6 @@
         CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "채팅방이 존재하지 않습니다."),
         UNAUTHORIZED_CHATROOM_ACCESS(HttpStatus.UNAUTHORIZED, "401", "채팅방에 접근할 권한이 없습니다."),
 
-        // 강의
-        COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", " 강의가 존재하지 않습니다."),
 
         // 알림
         ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "알림이 존재하지 않습니다.");
