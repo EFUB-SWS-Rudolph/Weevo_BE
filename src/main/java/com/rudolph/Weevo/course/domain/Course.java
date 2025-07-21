@@ -1,6 +1,6 @@
 package com.rudolph.Weevo.course.domain;
 
-import com.rudolph.Weevo.Member.domain.Member;
+import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.course.domain.enums.CourseCategory;
 import com.rudolph.Weevo.course.domain.enums.CourseStatus;
 import com.rudolph.Weevo.course.domain.enums.CourseType;
@@ -26,11 +26,11 @@ public class Course {
 
     private String description;
 
-    @Column(nullable = false)
-    private LocalDate recruitStartDate;     //강의 모집 시작 날짜
+    @Column(name = "course_start_date", nullable = false)
+    private LocalDate courseStartDate;
 
-    @Column(nullable = false)
-    private LocalDate recruitEndDate;       //강의 모집 끝 날짜
+    @Column(name = "course_end_date", nullable = false)
+    private LocalDate courseEndDate;
 
     @Enumerated(EnumType.STRING)
     private CourseType courseType;      // 강의 타입 ex)'재능 기부'

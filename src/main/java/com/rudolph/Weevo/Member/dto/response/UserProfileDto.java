@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.Member.dto.response;
+package com.rudolph.Weevo.member.dto.response;
 
 import lombok.Data;
 
