@@ -18,7 +18,16 @@
         // === 추가정보 입력 관련 에러 ===
         MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 사용자입니다."),
         INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "400", "이화인 인증 코드가 일치하지 않습니다."),
-        KEYWORD_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "400", "키워드는 최대 3개까지 선택 가능합니다.");
+        KEYWORD_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "400", "키워드는 최대 3개까지 선택 가능합니다."),
+
+        //채팅
+        CHATROOM_ALREADY_EXITED(HttpStatus.BAD_REQUEST, "400", "이미 나간 채팅방에는 접근할 수 없습니다."),
+        CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "채팅방이 존재하지 않습니다."),
+        UNAUTHORIZED_CHATROOM_ACCESS(HttpStatus.UNAUTHORIZED, "401", "채팅방에 접근할 권한이 없습니다."),
+
+        // 강의
+        COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", " 강의가 존재하지 않습니다.");
+
 
 
         private final HttpStatus httpStatus;

@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.chat.service;
 
+import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.chat.domain.Chat;
 import com.rudolph.Weevo.chat.domain.ChatRoom;
 import com.rudolph.Weevo.chat.domain.enums.ChatType;
@@ -7,6 +8,8 @@ import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import com.rudolph.Weevo.chat.dto.response.ChatMessageResponseDto;
 import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.chat.repository.ChatRoomRepository;
+import com.rudolph.Weevo.global.common.code.ErrorStatus;
+import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,16 +52,14 @@ public class ChatService {
 
     // 채팅방 내 메세지 읽어오기
     @Transactional(readOnly = true)
-    public ChatMessageResponseDto getMessages(Long chatRoomId, int page, int size) {
+    public ChatMessageResponseDto getMessages(CustomUserPrincipal user, Long chatRoomId, int page, int size) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHATROOM_NOT_FOUND));
 
-        Long myId = 1L; // 실제 서비스에선 SecurityContextHolder 로 가져오기
+        Member member = chatRoomService.findMember(user.getMemberId());
+        chatRoomService.validateChatRoomAccess(chatRoom, member.getId());
 
-        chatRoomService.validateChatRoomAccess(chatRoom, myId);
-
-        // 상대방 찾기: 채팅방에 저장된 sender/receiver 중 로그인한 사용자 제외
-        Member opponent = chatRoom.getSender().getId().equals(myId)
+        Member opponent = chatRoom.getSender().getId().equals(member.getId())
                 ? chatRoom.getReceiver()
                 : chatRoom.getSender();
 

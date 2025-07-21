@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.chat.service;
 
+import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.chat.domain.Chat;
 import com.rudolph.Weevo.chat.domain.ChatRoom;
 import com.rudolph.Weevo.chat.domain.enums.ChatCategory;
@@ -12,6 +13,8 @@ import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.chat.repository.ChatRoomRepository;
 import com.rudolph.Weevo.course.domain.Course;
 import com.rudolph.Weevo.course.repository.CourseRepository;
+import com.rudolph.Weevo.global.common.code.ErrorStatus;
+import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -32,9 +36,8 @@ public class ChatRoomService {
     private final CourseRepository courseRepository;
 
     @Transactional(readOnly = true)
-    public ChatRoomStatusDto checkChatRoomExist(Long opponentId, Long courseId) {
-        Member sender = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    public ChatRoomStatusDto checkChatRoomExist(CustomUserPrincipal user, Long opponentId, Long courseId) {
+        Member sender = findMember(user.getMemberId());
         Member receiver = findReceiver(opponentId);
 
         Optional<ChatRoom> existingRoom;
@@ -52,9 +55,8 @@ public class ChatRoomService {
         }
     }
 
-    public void createChatRoom(ChatRoomCreateRequestDto request) {
-        Member sender = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    public void createChatRoom(CustomUserPrincipal user, ChatRoomCreateRequestDto request) {
+        Member sender = findMember(user.getMemberId());
         Member receiver = findReceiver(request.getOpponentId());
 
         Course course;
@@ -88,9 +90,8 @@ public class ChatRoomService {
     }
 
     @Transactional(readOnly = true)
-    public ChatRoomListResponseDto getChatRooms(String category) {
-        Member member = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    public ChatRoomListResponseDto getChatRooms(CustomUserPrincipal user, String category) {
+        Member member = findMember(user.getMemberId());
 
         List<ChatRoom> chatRoomList;
         if (category == null || category.isBlank()) {
@@ -123,9 +124,8 @@ public class ChatRoomService {
     }
 
     // 메세지 읽음 처리
-    public void markMessagesAsRead(Long chatRoomId) {
-        Member member = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    public void markMessagesAsRead(CustomUserPrincipal user, Long chatRoomId) {
+        Member member = findMember(user.getMemberId());
         ChatRoom chatRoom = findChatRoom(chatRoomId);
         validateChatRoomAccess(chatRoom, member.getId());
 
@@ -133,10 +133,8 @@ public class ChatRoomService {
     }
 
     // 채팅방 나가기
-    public void leaveChatRoom(Long chatRoomId) {
-        Member member = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
+    public void leaveChatRoom(CustomUserPrincipal user, Long chatRoomId) {
+        Member member = findMember(user.getMemberId());
         ChatRoom chatRoom = findChatRoom(chatRoomId);
         validateChatRoomAccess(chatRoom, member.getId());
 
@@ -160,9 +158,15 @@ public class ChatRoomService {
     }
 
     @Transactional(readOnly = true)
+    public Member findMember(UUID memberId){
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(()-> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
     public ChatRoom findChatRoom(Long chatRoomId){
         return chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(()-> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
+                    .orElseThrow(()-> new GeneralException(ErrorStatus.CHATROOM_NOT_FOUND));
     }
 
     // 채팅방 접근 권한 확인
@@ -172,21 +176,21 @@ public class ChatRoomService {
         boolean isReceiver = chatRoom.getReceiver().getId().equals(memberId);
 
         if (!isSender && !isReceiver) {
-            throw new IllegalArgumentException("채팅방에 접근할 권한이 없습니다.");
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED_CHATROOM_ACCESS);
         }
         if ((isSender && chatRoom.isSenderExited()) ||
                 (isReceiver && chatRoom.isReceiverExited())) {
-            throw new IllegalStateException("이미 나간 채팅방에는 접근할 수 없습니다.");
+            throw new GeneralException(ErrorStatus.CHATROOM_ALREADY_EXITED);
         }
     }
 
-    private Member findReceiver(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다. ID = " + id));
+    private Member findReceiver(Long userId) {
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
-    private Course findCourse(Long id) {
-        return courseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다. ID = " + id));
+    private Course findCourse(Long userId) {
+        return courseRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
     }
 }
