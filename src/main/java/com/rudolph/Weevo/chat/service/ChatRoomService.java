@@ -12,11 +12,11 @@ import com.rudolph.Weevo.chat.dto.summary.ChatRoomSummary;
 import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.chat.repository.ChatRoomRepository;
 import com.rudolph.Weevo.course.domain.Course;
-import com.rudolph.Weevo.course.repository.CourseRepository;
+import com.rudolph.Weevo.course.service.CourseService;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.member.domain.Member;
-import com.rudolph.Weevo.member.repository.MemberRepository;
+import com.rudolph.Weevo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,19 +30,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
+    private final MemberService memberService;
+    private final CourseService courseService;
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final MemberRepository memberRepository;
-    private final CourseRepository courseRepository;
 
     @Transactional(readOnly = true)
     public ChatRoomStatusDto checkChatRoomExist(CustomUserPrincipal user, Long opponentId, Long courseId) {
-        Member sender = findMember(user.getMemberId());
-        Member receiver = findReceiver(opponentId);
+        Member sender = memberService.findMember(user.getMemberId());
+        Member receiver = memberService.findMemberById(opponentId);
 
         Optional<ChatRoom> existingRoom;
         if (courseId != null) {
-            Course course = findCourse(courseId);
+            Course course = courseService.findCourse(courseId);
             existingRoom = chatRoomRepository.findCourseChatRoom(sender.getId(), receiver.getId(), course.getId());
         } else {
             existingRoom = chatRoomRepository.findCoffeeChatRoom(sender.getId(), receiver.getId());
@@ -56,13 +56,13 @@ public class ChatRoomService {
     }
 
     public void createChatRoom(CustomUserPrincipal user, ChatRoomCreateRequestDto request) {
-        Member sender = findMember(user.getMemberId());
-        Member receiver = findReceiver(request.getOpponentId());
+        Member sender = memberService.findMember(user.getMemberId());
+        Member receiver = memberService.findMemberById(request.getOpponentId());
 
         Course course;
         ChatCategory category;
         if (request.getCourseId() != null) {
-            course = findCourse(request.getCourseId());
+            course = courseService.findCourse(request.getCourseId());
             category = ChatCategory.valueOf(course.getCourseType().name());
         } else {
             course = null;
@@ -91,7 +91,7 @@ public class ChatRoomService {
 
     @Transactional(readOnly = true)
     public ChatRoomListResponseDto getChatRooms(CustomUserPrincipal user, String category) {
-        Member member = findMember(user.getMemberId());
+        Member member = memberService.findMember(user.getMemberId());
 
         List<ChatRoom> chatRoomList;
         if (category == null || category.isBlank()) {
@@ -125,7 +125,7 @@ public class ChatRoomService {
 
     // 메세지 읽음 처리
     public void markMessagesAsRead(CustomUserPrincipal user, Long chatRoomId) {
-        Member member = findMember(user.getMemberId());
+        Member member = memberService.findMember(user.getMemberId());
         ChatRoom chatRoom = findChatRoom(chatRoomId);
         validateChatRoomAccess(chatRoom, member.getId());
 
@@ -134,7 +134,7 @@ public class ChatRoomService {
 
     // 채팅방 나가기
     public void leaveChatRoom(CustomUserPrincipal user, Long chatRoomId) {
-        Member member = findMember(user.getMemberId());
+        Member member = memberService.findMember(user.getMemberId());
         ChatRoom chatRoom = findChatRoom(chatRoomId);
         validateChatRoomAccess(chatRoom, member.getId());
 
@@ -158,12 +158,6 @@ public class ChatRoomService {
     }
 
     @Transactional(readOnly = true)
-    public Member findMember(UUID memberId){
-        return memberRepository.findByMemberId(memberId)
-                .orElseThrow(()-> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-    }
-
-    @Transactional(readOnly = true)
     public ChatRoom findChatRoom(Long chatRoomId){
         return chatRoomRepository.findById(chatRoomId)
                     .orElseThrow(()-> new GeneralException(ErrorStatus.CHATROOM_NOT_FOUND));
@@ -182,15 +176,5 @@ public class ChatRoomService {
                 (isReceiver && chatRoom.isReceiverExited())) {
             throw new GeneralException(ErrorStatus.CHATROOM_ALREADY_EXITED);
         }
-    }
-
-    private Member findReceiver(Long userId) {
-        return memberRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-    }
-
-    private Course findCourse(Long userId) {
-        return courseRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
     }
 }

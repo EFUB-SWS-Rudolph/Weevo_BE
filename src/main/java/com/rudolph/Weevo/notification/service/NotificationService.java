@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.notification.service;
 
+import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
 import com.rudolph.Weevo.notification.domain.Notification;
@@ -44,7 +45,7 @@ public class NotificationService {
 
     // 알림 조회
     @Transactional(readOnly = true)
-    public NotificationListResponseDto getNotifications() {
+    public NotificationListResponseDto getNotifications(CustomUserPrincipal user) {
         Member receiver = memberRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 

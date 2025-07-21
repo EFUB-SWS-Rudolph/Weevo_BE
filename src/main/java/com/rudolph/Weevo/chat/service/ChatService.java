@@ -12,6 +12,7 @@ import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
+import com.rudolph.Weevo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,17 +29,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final MemberRepository memberRepository;
-    private final ChatRepository chatRepository;
-    private final ChatRoomRepository chatRoomRepository;
+    private final MemberService memberService;
     private final ChatRoomService chatRoomService;
+    private final ChatRepository chatRepository;
 
     public void saveMessage(ChatMessage message) {
-        ChatRoom chatRoom = chatRoomRepository.findById(message.getChatRoomId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+        ChatRoom chatRoom = chatRoomService.findChatRoom(message.getChatRoomId());
 
-        Member sender = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Member sender = memberService.findMemberById(message.getSenderId());
 
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)
@@ -53,10 +51,9 @@ public class ChatService {
     // 채팅방 내 메세지 읽어오기
     @Transactional(readOnly = true)
     public ChatMessageResponseDto getMessages(CustomUserPrincipal user, Long chatRoomId, int page, int size) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.CHATROOM_NOT_FOUND));
+        ChatRoom chatRoom = chatRoomService.findChatRoom(chatRoomId);
 
-        Member member = chatRoomService.findMember(user.getMemberId());
+        Member member = memberService.findMember(user.getMemberId());
         chatRoomService.validateChatRoomAccess(chatRoom, member.getId());
 
         Member opponent = chatRoom.getSender().getId().equals(member.getId())
