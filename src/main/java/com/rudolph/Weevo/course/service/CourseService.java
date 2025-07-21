@@ -2,10 +2,8 @@ package com.rudolph.Weevo.course.service;
 
 import com.rudolph.Weevo.course.dto.request.CourseSearchRequest;
 import com.rudolph.Weevo.course.dto.request.CreateCourseRequest;
-import com.rudolph.Weevo.course.dto.response.CourseListResponse;
-import com.rudolph.Weevo.course.dto.response.CourseResponse;
+import com.rudolph.Weevo.course.dto.response.*;
 import com.rudolph.Weevo.course.domain.*;
-import com.rudolph.Weevo.course.dto.response.PagedCourseResponse;
 import com.rudolph.Weevo.course.repository.CourseBookmarkRepository;
 import com.rudolph.Weevo.course.domain.Course;
 import com.rudolph.Weevo.course.repository.CourseRepository;
@@ -162,6 +160,75 @@ public class CourseService {
                 .courses(list)
                 .build();
     }
+
+    // 6) 강의 상세 조회
+    @Transactional(readOnly = true)
+    public CourseDetailResponse getCourseDetail(Long courseId, UUID memberUuid) {
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
+
+        long bookmarkCnt = bookmarkRepository.countByCourseId(courseId);
+
+        // 로그인 사용자가 강의를 찜했는지 여부
+        Member member = memberRepository.findByMemberId(memberUuid)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        boolean myBookmark = bookmarkRepository
+                .existsByMemberIdAndCourseId(member.getId(), courseId);
+
+        return CourseDetailResponse.of(course, bookmarkCnt, myBookmark);
+    }
+
+    // 7) 강의 성사
+    @Transactional
+    public void confirmCourse(Long courseId, UUID teacherId, Long studentId) {
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
+
+        // 진행자 권한 검증
+        if (!course.getTeacher().getMemberId().equals(teacherId)) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED_COURSE_CONFIRM);
+        }
+
+        // 수강자 조회
+        Member student = memberRepository.findById(studentId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // 중복 확인
+        boolean exists = course.getMemberCourses().stream()
+                .anyMatch(mc -> mc.getMember().getId().equals(studentId));
+        if (exists) throw new GeneralException(ErrorStatus.COURSE_ALREADY_CONFIRMED);
+
+        MemberCourse mc = MemberCourse.of(student, course);
+        course.getMemberCourses().add(mc);
+
+        courseRepository.save(course);
+    }
+
+    // 8) 내 강의 조회
+    @Transactional(readOnly = true)
+    public MyCoursesResponse listMyCourses(UUID memberUuid) {
+
+        Member me = memberRepository.findByMemberId(memberUuid)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        List<CourseSummaryResponse> teaching = me.getCourses().stream()
+                .map(CourseSummaryResponse::of)
+                .toList();
+
+        List<CourseSummaryResponse> enrolled = me.getMemberCourses().stream()
+                .map(MemberCourse::getCourse)
+                .map(CourseSummaryResponse::of)
+                .toList();
+
+        return MyCoursesResponse.builder()
+                .teachingCourses(teaching)
+                .enrolledCourses(enrolled)
+                .build();
+    }
+
 }
 
 

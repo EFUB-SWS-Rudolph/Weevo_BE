@@ -1,8 +1,10 @@
 package com.rudolph.Weevo.course.controller;
 
+import com.rudolph.Weevo.course.dto.response.CourseDetailResponse;
 import com.rudolph.Weevo.course.dto.request.CourseSearchRequest;
 import com.rudolph.Weevo.course.dto.request.CreateCourseRequest;
 import com.rudolph.Weevo.course.dto.response.CourseResponse;
+import com.rudolph.Weevo.course.dto.response.MyCoursesResponse;
 import com.rudolph.Weevo.course.dto.response.PagedCourseResponse;
 import com.rudolph.Weevo.course.service.CourseService;
 import com.rudolph.Weevo.global.common.api.ApiResponse;
@@ -18,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Tag(name = "Course", description = "강의 관련 API")
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class CourseController {
 
     private final CourseService courseService;
 
+    // 1) 강의 생성
     @Operation(summary = "강의 생성", description = "새로운 강의를 등록합니다.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<CourseResponse>> createCourse(
@@ -63,6 +68,43 @@ public class CourseController {
             Pageable pageable
     ) {
         PagedCourseResponse resp = courseService.listCourses(req, pageable);
+        return ApiResponse.onSuccess(SuccessStatus._OK, resp);
+    }
+
+    // 6) 강의 상세 조회
+    @GetMapping("/{courseId}")
+    public ResponseEntity<ApiResponse<CourseDetailResponse>> getCourse(
+            @PathVariable Long courseId,
+            @AuthenticationPrincipal CustomUserPrincipal user
+    ) {
+        CourseDetailResponse resp =
+                courseService.getCourseDetail(courseId, user.getMemberId());
+        return ApiResponse.onSuccess(SuccessStatus._OK, resp);
+    }
+
+    // 7) 강의 성사
+    @PostMapping("/confirm/{courseId}/{memberId}")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> confirmCourse(
+            @PathVariable Long courseId,
+            @PathVariable Long memberId,
+            @AuthenticationPrincipal CustomUserPrincipal user
+    ) {
+        courseService.confirmCourse(courseId, user.getMemberId(), memberId);
+
+        Map<String, Object> resp = Map.of(
+                "courseId",   courseId,
+                "studentId",  memberId,
+                "confirmedAt", java.time.LocalDateTime.now()
+        );
+        return ApiResponse.onSuccess(SuccessStatus._OK, resp);
+    }
+
+    // 8) 내 강의 조회
+    @GetMapping("/mine")
+    public ResponseEntity<ApiResponse<MyCoursesResponse>> getMyCourses(
+            @AuthenticationPrincipal CustomUserPrincipal user) {
+
+        MyCoursesResponse resp = courseService.listMyCourses(user.getMemberId());
         return ApiResponse.onSuccess(SuccessStatus._OK, resp);
     }
 
