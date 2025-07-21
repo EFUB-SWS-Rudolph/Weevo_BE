@@ -30,7 +30,7 @@ public class ChatRoomSummary {
                 .opponentId(member.getId())
                 .opponentName(member.getNickName())
                 .opponentProfileImageUrl(member.getProfileImage())
-                .courseTitle(chatRoom.getCourse().getTitle())
+                .courseTitle(chatRoom.getCourse() != null ? chatRoom.getCourse().getTitle() : "커피챗")
                 .lastMessage(lastChat != null ? lastChat.getContent() : null)
                 .lastMessageSentAt(lastChat != null ? lastChat.getSentAt() : null)
                 .unreadCount(unreadCount)

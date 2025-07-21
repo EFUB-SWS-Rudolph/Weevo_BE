@@ -13,6 +13,15 @@ public class CourseSummary {
     private String recruitEndDate;
 
     public static CourseSummary from(Course course) {
+        if (course == null) {
+            return CourseSummary.builder()
+                    .courseId(null)
+                    .title(null)
+                    .recruitStartDate(null)
+                    .recruitEndDate(null)
+                    .build();
+        }
+
         return CourseSummary.builder()
                 .courseId(course.getId())
                 .title(course.getTitle())

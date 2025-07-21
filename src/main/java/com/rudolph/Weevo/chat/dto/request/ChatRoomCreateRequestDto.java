@@ -8,7 +8,7 @@ import lombok.Getter;
 public class ChatRoomCreateRequestDto {
     @NotNull
     private Long opponentId;
-    @NotNull
+
     private Long courseId;
     @NotBlank
     private String content;
