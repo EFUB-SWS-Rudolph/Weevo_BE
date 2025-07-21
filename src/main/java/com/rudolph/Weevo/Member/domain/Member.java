@@ -42,6 +42,10 @@ public class Member extends BaseEntity {
     private String college;
     private String email;
     private String location;
+    private String profileImage;
+    private Boolean coffeeChat;
+    private Boolean donation;
+    private Boolean exchange;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberInterestTag> interestTags = new ArrayList<>();
