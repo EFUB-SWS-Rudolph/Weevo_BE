@@ -1,7 +1,4 @@
 spring:
-  application:
-    name: Weevo
-
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
@@ -16,6 +13,18 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: chat-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
   security:
     oauth2:
@@ -40,7 +49,6 @@ spring:
             redirect-uri: ${OAUTH_KAKAO_REDIRECT_URI}
             client-name: Kakao
             client-authentication-method: client_secret_post
-
         provider:
 
           kakao:
@@ -75,3 +83,7 @@ aws:
     region: ap-northeast-2
     access-key: ${AWS_ACCESS_KEY_ID}
     secret-key: ${AWS_SECRET_ACCESS_KEY}
+
+message:
+  topic:
+    name: chat.messages

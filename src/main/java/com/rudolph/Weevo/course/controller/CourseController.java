@@ -5,7 +5,7 @@ import com.rudolph.Weevo.course.dto.response.CourseResponse;
 import com.rudolph.Weevo.course.service.CourseService;
 import com.rudolph.Weevo.global.common.api.ApiResponse;
 import com.rudolph.Weevo.global.common.code.SuccessStatus;
-import com.rudolph.Weevo.Auth.security.CustomUserPrincipal;
+import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

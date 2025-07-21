@@ -47,11 +47,13 @@ dependencies {
 
 	//lombok
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.kafka:spring-kafka:3.0.0'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
 
 	// S3
 	implementation platform('software.amazon.awssdk:bom:2.20.0')
@@ -61,8 +63,6 @@ dependencies {
 	//기타
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
-	runtimeOnly 'com.h2database:h2'
-
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
