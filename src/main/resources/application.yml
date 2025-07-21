@@ -1,11 +1,12 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -24,6 +25,45 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  security:
+    oauth2:
+      client:
+        registration:
+
+          google:
+            client-id: ${OAUTH_GOOGLE_CLIENT_ID}
+            client-secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+            redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+
+          kakao:
+            client-id: ${OAUTH_KAKAO_CLIENT_ID}
+            client-secret: ${OAUTH_KAKAO_CLIENT_SECRET}
+            scope:
+              - profile_nickname
+              - account_email
+            authorization-grant-type: authorization_code
+            redirect-uri: ${OAUTH_KAKAO_REDIRECT_URI}
+            client-name: Kakao
+            client-authentication-method: client_secret_post
+        provider:
+
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize #인가 코드 받기
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+  jwt:
+    secret: ${JWT_SECRET}
+    redirect: ${JWT_REDIRECT}
+    access_token:
+      expiration_time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}    #한시간
+    refresh_token:
+      expiration_time: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME}  #일주일
 
 springdoc:
   swagger-ui:
