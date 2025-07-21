@@ -19,8 +19,7 @@ import java.util.UUID;
 @Table(name = "members")
 public class Member extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -36,13 +35,17 @@ public class Member extends BaseEntity {
     @Column(name = "provider_id", nullable = false, length = 50) //kakao에서 이메일을 받을 수 없으므로 providerId를 통해 유저 구분
     private String providerId;
 
-  
+    @Column(name = "student_id")
     private String studentId;
+
     private String department;
     private String college;
     private String email;
     private String location;
+
+    @Column(name = "profile_image")
     private String profileImage;
+
     private Boolean coffeeChat;
     private Boolean donation;
     private Boolean exchange;
@@ -53,10 +56,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberTalentTag> talentTags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacher")        //강의 개설 user:course = 1:N
+    @OneToMany(mappedBy = "teacher")
     private List<Course> courses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")         //유저:강의 = N:M (수강)
+    @OneToMany(mappedBy = "member")
     private List<MemberCourse> memberCourses = new ArrayList<>();
 
     public void additionalInfo(String nickName, String studentId, String college, String department, String email,

@@ -16,8 +16,8 @@ public class CourseSummary {
         return CourseSummary.builder()
                 .courseId(course.getId())
                 .title(course.getTitle())
-                .recruitStartDate(course.getRecruitStartDate().toString())
-                .recruitEndDate(course.getRecruitEndDate().toString())
+                .recruitStartDate(course.getCourseStartDate().toString())
+                .recruitEndDate(course.getCourseEndDate().toString())
                 .build();
     }
 }
