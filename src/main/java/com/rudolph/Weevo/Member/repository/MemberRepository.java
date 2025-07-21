@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.Member.repository;
+package com.rudolph.Weevo.member.repository;
 
-import com.rudolph.Weevo.Member.domain.Member;
+import com.rudolph.Weevo.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

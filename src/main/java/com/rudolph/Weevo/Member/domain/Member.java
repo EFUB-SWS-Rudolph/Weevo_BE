@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.Member.domain;
+package com.rudolph.Weevo.member.domain;
 
 import com.rudolph.Weevo.course.domain.Course;
 import com.rudolph.Weevo.course.domain.MemberCourse;

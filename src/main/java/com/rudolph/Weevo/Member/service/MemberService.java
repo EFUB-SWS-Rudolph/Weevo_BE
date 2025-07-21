@@ -1,6 +1,6 @@
 package com.rudolph.Weevo.member.service;
 
-import com.rudolph.Weevo.Auth.security.CustomUserPrincipal;
+import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.dto.request.InfoRequest;
 import com.rudolph.Weevo.member.dto.response.MemberDetailResponse;
