@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Repository
 public interface CourseBookmarkRepository extends JpaRepository<CourseBookmark, Long> {
 
@@ -18,4 +22,14 @@ public interface CourseBookmarkRepository extends JpaRepository<CourseBookmark, 
 
     // 3) 찜 취소
     void deleteByMemberIdAndCourseId(Long memberId, Long courseId);
+
+    // 4) 북마크 수 조회
+    @Query("select b.course.id, count(b) from CourseBookmark b where b.course.id in :ids group by b.course.id")
+    List<Object[]> findBookmarkCountIn(@Param("ids") List<Long> ids);
+
+    // 5) 북마크 수에 따른 강의 목록 조회
+    default Map<Long, Long> countByCourseIds(List<Long> ids) {
+        return findBookmarkCountIn(ids).stream()
+                .collect(Collectors.toMap(t -> (Long) t[0], t -> (Long) t[1]));
+    }
 }

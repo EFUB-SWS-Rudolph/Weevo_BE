@@ -16,6 +16,7 @@
 
         // 강의
         COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 강의입니다."),
+        INVALID_SORT(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 sort 값입니다. (latest, popular)"),
 
         //추가 회원가입 에러
         // === 추가정보 입력 관련 에러 ===

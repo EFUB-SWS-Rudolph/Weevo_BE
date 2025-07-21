@@ -1,7 +1,9 @@
 package com.rudolph.Weevo.course.controller;
 
+import com.rudolph.Weevo.course.dto.request.CourseSearchRequest;
 import com.rudolph.Weevo.course.dto.request.CreateCourseRequest;
 import com.rudolph.Weevo.course.dto.response.CourseResponse;
+import com.rudolph.Weevo.course.dto.response.PagedCourseResponse;
 import com.rudolph.Weevo.course.service.CourseService;
 import com.rudolph.Weevo.global.common.api.ApiResponse;
 import com.rudolph.Weevo.global.common.code.SuccessStatus;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -51,6 +54,16 @@ public class CourseController {
 
         courseService.removeBookmark(user.getMemberId(), courseId);
         return ApiResponse.onSuccess(SuccessStatus._OK, null);
+    }
+
+    // 5) 강의 목록 조회
+    @GetMapping
+    public ResponseEntity<ApiResponse<PagedCourseResponse>> getCourses(
+            @ModelAttribute CourseSearchRequest req,
+            Pageable pageable
+    ) {
+        PagedCourseResponse resp = courseService.listCourses(req, pageable);
+        return ApiResponse.onSuccess(SuccessStatus._OK, resp);
     }
 
 

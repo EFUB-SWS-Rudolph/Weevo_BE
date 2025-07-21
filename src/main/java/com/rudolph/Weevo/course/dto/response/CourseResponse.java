@@ -25,11 +25,10 @@ public class CourseResponse {
     private String createdAt;
     private String updatedAt;
 
-    /** 엔티티 → DTO 매핑용 팩토리 */
     public static CourseResponse from(Course course) {
         List<String> imageUrls = course.getCourseImages().stream()
                 .map(CourseImage::getCourseImgUrl)
-                .toList();          // Java 16+ (또는 Collectors.toList())
+                .toList();
 
         return CourseResponse.builder()
                 .courseId(course.getId())

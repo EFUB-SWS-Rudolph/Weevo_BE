@@ -14,8 +14,6 @@ public class MemberCourse {
     @Column(name = "member_course_id")
     private Long memberCourseId;
 
-    //completion_rate - 필요한가?
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
