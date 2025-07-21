@@ -1,8 +1,11 @@
 package com.rudolph.Weevo.notification.service;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
+import com.rudolph.Weevo.global.common.code.ErrorStatus;
+import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
+import com.rudolph.Weevo.member.service.MemberService;
 import com.rudolph.Weevo.notification.domain.Notification;
 import com.rudolph.Weevo.notification.domain.enums.NotiType;
 import com.rudolph.Weevo.notification.dto.NotificationListResponseDto;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationService {
 
+    private final MemberService memberService;
     private final NotificationRepository notificationRepository;
     private final MemberRepository memberRepository;
 
@@ -46,8 +50,7 @@ public class NotificationService {
     // 알림 조회
     @Transactional(readOnly = true)
     public NotificationListResponseDto getNotifications(CustomUserPrincipal user) {
-        Member receiver = memberRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Member receiver = memberService.findMember(user.getMemberId());
 
         List<Notification> notifications = notificationRepository.findByReceiverOrderByCreatedAtDesc(receiver);
 
@@ -70,11 +73,15 @@ public class NotificationService {
 
     // 알림 읽음 처리
     public void readNotification(Long notificationId) {
-        Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new IllegalArgumentException("알림이 존재하지 않습니다."));
+        Notification notification = findNotification(notificationId);
 
         if (!notification.isRead()) {
             notification.setRead();
         }
+    }
+
+    public Notification findNotification(Long notificationId){
+        return notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ALARM_NOT_FOUND));
     }
 }

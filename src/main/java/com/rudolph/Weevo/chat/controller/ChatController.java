@@ -9,27 +9,32 @@ import com.rudolph.Weevo.chat.dto.response.ChatRoomStatusDto;
 import com.rudolph.Weevo.chat.service.ChatRoomService;
 import com.rudolph.Weevo.chat.service.ChatService;
 import com.rudolph.Weevo.chat.service.kafka.KafkaProducer;
+import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatController {
 
-    private final MemberRepository memberRepository;
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
     private final KafkaProducer producer;
 
     @MessageMapping("/message")
-    public void sendMessage(ChatMessage message) {
+    public void sendMessage(ChatMessage message, Principal principal) {
+        Long senderId = ((Member) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getId();
+        message.setSenderId(senderId);
         producer.sendMessage(message);
     }
 
