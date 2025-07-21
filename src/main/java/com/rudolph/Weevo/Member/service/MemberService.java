@@ -1,19 +1,19 @@
-package com.rudolph.Weevo.Member.service;
+package com.rudolph.Weevo.member.service;
 
-import com.rudolph.Weevo.Auth.security.CustomUserPrincipal;
-import com.rudolph.Weevo.Member.domain.Member;
-import com.rudolph.Weevo.Member.dto.request.InfoRequest;
-import com.rudolph.Weevo.Member.dto.response.MemberDetailResponse;
-import com.rudolph.Weevo.Member.dto.response.MemberListResponse;
-import com.rudolph.Weevo.Member.repository.MemberRepository;
+import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
+import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.member.dto.request.InfoRequest;
+import com.rudolph.Weevo.member.dto.response.MemberDetailResponse;
+import com.rudolph.Weevo.member.dto.response.MemberListResponse;
+import com.rudolph.Weevo.member.repository.MemberRepository;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.tag.domain.Tag;
 import com.rudolph.Weevo.tag.service.TagService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -72,5 +72,17 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
         return MemberDetailResponse.from(member);
+    }
+
+    @Transactional(readOnly = true)
+    public Member findMember(UUID memberId){
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(()-> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long userId) {
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 }
