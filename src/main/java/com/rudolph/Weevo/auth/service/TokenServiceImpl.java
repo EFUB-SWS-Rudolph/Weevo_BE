@@ -1,8 +1,8 @@
-package com.rudolph.Weevo.Auth.service;
+package com.rudolph.Weevo.auth.service;
 
-import com.rudolph.Weevo.Auth.domain.RefreshToken;
-import com.rudolph.Weevo.Auth.dto.TokenResponse;
-import com.rudolph.Weevo.Auth.repository.RefreshTokenRepository;
+import com.rudolph.Weevo.auth.domain.RefreshToken;
+import com.rudolph.Weevo.auth.dto.TokenResponse;
+import com.rudolph.Weevo.auth.repository.RefreshTokenRepository;
 import com.rudolph.Weevo.global.exception.TokenErrorResult;
 import com.rudolph.Weevo.global.exception.TokenException;
 import com.rudolph.Weevo.global.util.JwtUtil;

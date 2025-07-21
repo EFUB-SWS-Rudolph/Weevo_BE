@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.Auth.dto.info;
+package com.rudolph.Weevo.auth.dto.info;
 
 public interface OAuth2UserInfo {
     String getProviderId();

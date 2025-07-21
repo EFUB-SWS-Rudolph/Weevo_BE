@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.Auth.service;
+package com.rudolph.Weevo.auth.service;
 
-import com.rudolph.Weevo.Auth.dto.TokenResponse;
+import com.rudolph.Weevo.auth.dto.TokenResponse;
 
 public interface TokenService {
     TokenResponse reissueAccessToken(String authorizationHeader);

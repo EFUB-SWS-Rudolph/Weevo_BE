@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.Auth.domain;
+package com.rudolph.Weevo.auth.domain;
 
 import com.rudolph.Weevo.global.domain.BaseEntity;
 import jakarta.persistence.*;

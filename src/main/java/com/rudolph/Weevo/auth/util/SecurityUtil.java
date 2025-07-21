@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.Auth.util;
+package com.rudolph.Weevo.auth.util;
 
-import com.rudolph.Weevo.Auth.security.CustomUserPrincipal;
+import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.global.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

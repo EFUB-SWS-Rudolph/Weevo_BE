@@ -1,7 +1,7 @@
-package com.rudolph.Weevo.Auth.controller;
+package com.rudolph.Weevo.auth.controller;
 
-import com.rudolph.Weevo.Auth.dto.TokenResponse;
-import com.rudolph.Weevo.Auth.service.TokenService;
+import com.rudolph.Weevo.auth.dto.TokenResponse;
+import com.rudolph.Weevo.auth.service.TokenService;
 import com.rudolph.Weevo.global.common.api.ApiResponse;
 import com.rudolph.Weevo.global.common.code.SuccessStatus;
 import lombok.RequiredArgsConstructor;

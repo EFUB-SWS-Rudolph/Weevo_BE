@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.Auth.controller;
+package com.rudolph.Weevo.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -1,11 +1,11 @@
 package com.rudolph.Weevo.global.handler;
 
 import com.rudolph.Weevo.global.util.JwtUtil;
-import com.rudolph.Weevo.Auth.domain.RefreshToken;
-import com.rudolph.Weevo.Auth.dto.info.GoogleUserInfo;
-import com.rudolph.Weevo.Auth.dto.info.KakaoUserInfo;
-import com.rudolph.Weevo.Auth.dto.info.OAuth2UserInfo;
-import com.rudolph.Weevo.Auth.repository.RefreshTokenRepository;
+import com.rudolph.Weevo.auth.domain.RefreshToken;
+import com.rudolph.Weevo.auth.dto.info.GoogleUserInfo;
+import com.rudolph.Weevo.auth.dto.info.KakaoUserInfo;
+import com.rudolph.Weevo.auth.dto.info.OAuth2UserInfo;
+import com.rudolph.Weevo.auth.repository.RefreshTokenRepository;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;

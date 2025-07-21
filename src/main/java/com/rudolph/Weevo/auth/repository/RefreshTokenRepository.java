@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.Auth.repository;
+package com.rudolph.Weevo.auth.repository;
 
-import com.rudolph.Weevo.Auth.domain.RefreshToken;
+import com.rudolph.Weevo.auth.domain.RefreshToken;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

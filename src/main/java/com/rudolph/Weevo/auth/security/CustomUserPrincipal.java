@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.Auth.security;
+package com.rudolph.Weevo.auth.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

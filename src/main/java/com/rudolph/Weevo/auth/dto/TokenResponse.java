@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.Auth.dto;
+package com.rudolph.Weevo.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
