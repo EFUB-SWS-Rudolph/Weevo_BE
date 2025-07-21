@@ -1,11 +1,11 @@
-package com.rudolph.Weevo.Member.service;
+package com.rudolph.Weevo.member.service;
 
 import com.rudolph.Weevo.Auth.security.CustomUserPrincipal;
-import com.rudolph.Weevo.Member.domain.Member;
-import com.rudolph.Weevo.Member.dto.request.InfoRequest;
-import com.rudolph.Weevo.Member.dto.response.MemberDetailResponse;
-import com.rudolph.Weevo.Member.dto.response.MemberListResponse;
-import com.rudolph.Weevo.Member.repository.MemberRepository;
+import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.member.dto.request.InfoRequest;
+import com.rudolph.Weevo.member.dto.response.MemberDetailResponse;
+import com.rudolph.Weevo.member.dto.response.MemberListResponse;
+import com.rudolph.Weevo.member.repository.MemberRepository;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.tag.domain.Tag;

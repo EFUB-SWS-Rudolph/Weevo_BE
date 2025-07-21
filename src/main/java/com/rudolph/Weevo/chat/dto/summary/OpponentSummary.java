@@ -15,8 +15,8 @@ public class OpponentSummary {
     public static OpponentSummary from(Member member) {
         return OpponentSummary.builder()
                 .userId(member.getId())
-                .name(member.getName())
-                .profileImageUrl(member.getImageUrl())
+                .name(member.getNickName())
+                .profileImageUrl(member.getProfileImage())
                 .build();
     }
 }

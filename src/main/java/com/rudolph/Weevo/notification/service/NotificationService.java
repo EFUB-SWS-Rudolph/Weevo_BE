@@ -63,7 +63,7 @@ public class NotificationService {
         return switch (notification.getType()) {
             case CHAT -> "새로운 메시지가 있습니다. 확인해주세요!";
             case COURSE_MATCHED -> "강의가 성사되었어요! ‘내 강의’ 탭에서 확인하세요.";
-            case COURSE_CANCELED -> notification.getRequester().getName() + "님이 강의를 취소를 요청하셨어요. 승인 여부를 결정해주세요.";
+            case COURSE_CANCELED -> notification.getRequester().getNickName() + "님이 강의를 취소를 요청하셨어요. 승인 여부를 결정해주세요.";
         };
     }
 

@@ -1,10 +1,8 @@
-package com.rudolph.Weevo.Member.dto.request;
+package com.rudolph.Weevo.member.dto.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 

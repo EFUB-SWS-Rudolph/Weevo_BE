@@ -150,7 +150,7 @@ public class ChatRoomService {
                 .chatRoom(chatRoom)
                 .sender(null)
                 .type(ChatType.SYSTEM)
-                .content(member.getName() + "님이 채팅방을 떠났습니다.")
+                .content(member.getNickName() + "님이 채팅방을 떠났습니다.")
                 .build();
         chatRepository.save(systemMessage);
 
