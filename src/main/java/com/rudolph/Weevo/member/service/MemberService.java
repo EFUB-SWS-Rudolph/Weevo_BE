@@ -2,12 +2,14 @@ package com.rudolph.Weevo.member.service;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.member.domain.MemberTalentTag;
 import com.rudolph.Weevo.member.dto.request.InfoRequest;
-import com.rudolph.Weevo.member.dto.response.MemberDetailResponse;
-import com.rudolph.Weevo.member.dto.response.MemberListResponse;
+import com.rudolph.Weevo.member.dto.request.UpdateTalentTagRequestDto;
+import com.rudolph.Weevo.member.dto.response.*;
 import com.rudolph.Weevo.member.repository.MemberRepository;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
+import com.rudolph.Weevo.member.repository.MemberTalentTagRepository;
 import com.rudolph.Weevo.tag.domain.Tag;
 import com.rudolph.Weevo.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rudolph.Weevo.member.domain.MemberInterestTag;
 import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
-import com.rudolph.Weevo.member.dto.response.MemberInterestTagDto;
-import com.rudolph.Weevo.member.dto.response.UserProfileDto;
 import com.rudolph.Weevo.member.repository.MemberInterestTagRepository;
 import com.rudolph.Weevo.member.repository.MemberTagRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +38,7 @@ public class MemberService {
     private final TagService tagService;
     private final MemberInterestTagRepository memberInterestTagRepository;
     private final MemberTagRepository memberTagRepository;
+    private final MemberTalentTagRepository memberTalentTagRepository;
 
     //추가 회원 정보 가입
     @Transactional
@@ -139,6 +140,29 @@ public class MemberService {
         }
         memberInterestTagRepository.saveAll(newInterestTags);
         return MemberInterestTagDto.from(member, newInterestTags);
+    }
+
+    @Transactional //재능 태그 수정
+    public MemberTalentTagDto updateTalentTag(CustomUserPrincipal principal, UpdateTalentTagRequestDto requestDto) {
+        UUID memberId = principal.getMemberId();
+        Member member = findMember(memberId);
+
+        //기존 재능 태그 제거
+        memberTalentTagRepository.deleteByMember(member);
+
+        //새로 설정된 태그 추가
+        List<MemberTalentTag> newTalentTags = new ArrayList<>();
+        for (Long tagId: requestDto.getTagIds()) {
+            Tag tag = memberTagRepository.findById(tagId)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
+            newTalentTags.add(
+                    MemberTalentTag.builder()
+                            .member(member)
+                            .tag(tag)
+                            .build());
+        }
+        memberTalentTagRepository.saveAll(newTalentTags);
+        return MemberTalentTagDto.from(member, newTalentTags);
     }
 
     @Transactional                  //accessToken 프론트에서 받아와야하나?

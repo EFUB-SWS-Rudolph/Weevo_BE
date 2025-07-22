@@ -247,7 +247,6 @@ public class CourseService {
 //                 .map(MemberCourse::getCourse)
 //                 .toList();
 //         return MyCourseListDto.from(myCourses);
-    }
 
 }
 
