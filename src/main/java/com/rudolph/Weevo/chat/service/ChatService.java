@@ -9,6 +9,8 @@ import com.rudolph.Weevo.chat.dto.response.ChatMessageResponseDto;
 import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.service.MemberService;
+import com.rudolph.Weevo.notification.domain.enums.NotiType;
+import com.rudolph.Weevo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,12 +29,14 @@ public class ChatService {
 
     private final MemberService memberService;
     private final ChatRoomService chatRoomService;
+    private final NotificationService notificationService;
     private final ChatRepository chatRepository;
 
     public void saveMessage(ChatMessage message) {
         ChatRoom chatRoom = chatRoomService.findChatRoom(message.getChatRoomId());
 
         Member sender = memberService.findMember(message.getSenderId());
+        Member receiver = memberService.findMember(message.getReceiverId());
 
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)
@@ -42,6 +46,7 @@ public class ChatService {
                 .isRead(false)
                 .build();
         chatRepository.save(chat);
+        notificationService.createNotification(NotiType.CHAT, sender, receiver, null);
     }
 
     // 채팅방 내 메세지 읽어오기

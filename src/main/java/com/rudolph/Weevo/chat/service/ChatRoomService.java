@@ -17,6 +17,8 @@ import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.service.MemberService;
+import com.rudolph.Weevo.notification.domain.enums.NotiType;
+import com.rudolph.Weevo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ public class ChatRoomService {
 
     private final MemberService memberService;
     private final CourseService courseService;
+    private final NotificationService notificationService;
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
 
@@ -86,6 +89,7 @@ public class ChatRoomService {
                     .content(request.getContent())
                     .build();
         chatRepository.save(chat);
+        notificationService.createNotification(NotiType.COURSE_MATCHED, sender, receiver, course.getTitle());
     }
 
     @Transactional(readOnly = true)
