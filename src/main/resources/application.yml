@@ -15,7 +15,7 @@ spring:
         format_sql: true
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
     consumer:
       group-id: chat-group
       auto-offset-reset: earliest
