@@ -116,7 +116,7 @@ public class CourseController {
         return ApiResponse.onSuccess(SuccessStatus._OK, Map.of("message", msg));
     }
 
-    // 9) 내가 찜한 강의 조회
+    // 10) 내가 찜한 강의 조회
     @GetMapping("/bookmark")
     public ResponseEntity<ApiResponse<MyCourseListDto>> getMyBookmarkCourses(
             @AuthenticationPrincipal CustomUserPrincipal user) {

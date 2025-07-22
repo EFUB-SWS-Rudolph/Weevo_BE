@@ -1,6 +1,7 @@
 package com.rudolph.Weevo.member.service;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
+import com.rudolph.Weevo.global.service.S3Service;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.domain.MemberTalentTag;
 import com.rudolph.Weevo.member.dto.request.InfoRequest;
@@ -23,6 +24,7 @@ import com.rudolph.Weevo.member.repository.MemberInterestTagRepository;
 import com.rudolph.Weevo.member.repository.MemberTagRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -38,6 +40,7 @@ public class MemberService {
     private final MemberInterestTagRepository memberInterestTagRepository;
     private final MemberTagRepository memberTagRepository;
     private final MemberTalentTagRepository memberTalentTagRepository;
+    private final S3Service s3Service;
 
     // 1) 추가 회원 정보 가입
     @Transactional
@@ -194,4 +197,13 @@ public class MemberService {
         }
     }
 
+    @Transactional
+    public String updateProfileImage(CustomUserPrincipal principal, MultipartFile imageFile) {
+        Long memberId = principal.getMemberId();
+        Member member = findMember(memberId);
+
+        String imageUrl = s3Service.uploadFile(imageFile, "/profile" + memberId);
+        member.updateProfileImage(imageUrl);
+        return imageUrl;
+    }
 }

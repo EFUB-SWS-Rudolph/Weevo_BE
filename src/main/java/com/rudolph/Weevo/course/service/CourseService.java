@@ -233,14 +233,6 @@ public class CourseService {
                 .enrolledCourses(enrolled)
                 .build();
     }
-
-    // 9) 내가 찜한 강의 조회
-    @Transactional(readOnly = true)
-    public MyCourseListDto getMyBookmarkCourses(Long memberId) {
-
-        //찜한 강의 목록
-        List<Course> bookmarkedCourses = bookmarkRepository.findAllBookmarkedByMemberId(memberId);
-        return MyCourseListDto.from(bookmarkedCourses);
         
     // 9) 강의 성사 취소
     @Transactional
@@ -278,6 +270,15 @@ public class CourseService {
 
             case PENDING -> "성사 취소 신청 완료되었습니다. 상대방도 성사 취소 버튼을 눌러야 최종 취소됩니다.";
         };
+    }
+
+    // 10) 내가 찜한 강의 조회
+    @Transactional(readOnly = true)
+    public MyCourseListDto getMyBookmarkCourses(Long memberId) {
+
+        //찜한 강의 목록
+        List<Course> bookmarkedCourses = bookmarkRepository.findAllBookmarkedByMemberId(memberId);
+        return MyCourseListDto.from(bookmarkedCourses);
     }
 }
 
