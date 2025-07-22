@@ -88,7 +88,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
             String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
 
             //추가 정보 입력 페이지로 리다이렉트
-            String redirectUri = "http://localhost:3000/signup/additional?accessToken=" + accessToken;
+            String redirectUri = "http://localhost:5173/signup/additional?accessToken=" + accessToken;
             getRedirectStrategy().sendRedirect(request, response, redirectUri);
             return; // 기존 유저 코드가 실행되지 않게 함
         } else {
