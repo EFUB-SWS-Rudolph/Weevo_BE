@@ -4,7 +4,6 @@ import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.member.domain.Member;
-import com.rudolph.Weevo.member.repository.MemberRepository;
 import com.rudolph.Weevo.member.service.MemberService;
 import com.rudolph.Weevo.notification.domain.Notification;
 import com.rudolph.Weevo.notification.domain.enums.NotiType;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +25,6 @@ public class NotificationService {
 
     private final MemberService memberService;
     private final NotificationRepository notificationRepository;
-    private final MemberRepository memberRepository;
 
     // 알림 생성
     public void createNotification(NotiType notiType, Member requester, Member receiver, @Nullable String courseTitle) {

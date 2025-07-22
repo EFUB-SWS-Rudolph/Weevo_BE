@@ -3,12 +3,15 @@ package com.rudolph.Weevo.chat.controller;
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
+import com.rudolph.Weevo.chat.dto.request.ReadMessageRequest;
 import com.rudolph.Weevo.chat.dto.response.ChatMessageResponseDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomListResponseDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomStatusDto;
 import com.rudolph.Weevo.chat.service.ChatRoomService;
 import com.rudolph.Weevo.chat.service.ChatService;
 import com.rudolph.Weevo.chat.service.kafka.KafkaProducer;
+import com.rudolph.Weevo.global.common.code.ErrorStatus;
+import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
 import jakarta.validation.Valid;
@@ -16,8 +19,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -35,7 +40,14 @@ public class ChatController {
     public void sendMessage(ChatMessage message, Principal principal) {
         Long senderId = ((Member) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getId();
         message.setSenderId(senderId);
+        message.setRead(false);
         producer.sendMessage(message);
+    }
+
+    @MessageMapping("/read")
+    public void readMessage(@Validated @Payload ReadMessageRequest request, Principal principal) {
+        CustomUserPrincipal user = (CustomUserPrincipal) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
+        chatRoomService.markMessagesAsRead(user, request.getChatRoomId());
     }
 
     // 채팅방 존재 여부
