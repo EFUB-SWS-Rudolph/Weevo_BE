@@ -27,11 +27,11 @@ public class JwtUtil {
     }
 
     //엑세스 토큰을 발급하는 메서드
-    public String generateAccessToken(UUID memberId, long expirationMillis){
+    public String generateAccessToken(Long memberId, long expirationMillis){
         log.info("엑세스 토큰이 발급되었습니다.");
 
         return Jwts.builder()
-                .claim("memberId", memberId.toString())
+                .claim("memberId", memberId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationMillis))
                 .signWith(this.getSigningKey())
@@ -39,7 +39,7 @@ public class JwtUtil {
     }
 
     //리프레쉬 토큰을 발급하는 메서드
-    public String generateRefreshToken(UUID memberId, Long expirationMillis){
+    public String generateRefreshToken(Long memberId, Long expirationMillis){
         log.info("리프레쉬 토큰이 발급되었습니다.");
 
         return Jwts.builder()
@@ -56,19 +56,15 @@ public class JwtUtil {
     }
 
     //토큰에서 유저 id를 반환하는 메서드
-    public String getMemberIdFromToken(String token){
-        try{
-            String memberId = Jwts.parser()
-                    .verifyWith(this.getSigningKey())
+    public Long getMemberIdFromToken(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token)
                     .getPayload()
-                    .get("memberId", String.class);
-            log.info("유저 id를 반환합니다.");
-            return memberId;
-        } catch (JwtException | IllegalArgumentException e){
-            //토큰이 유효하지 않은 경우
-            log.warn("유효하지 않은 토큰입니다.");
+                    .get("memberId", Long.class);
+        } catch (JwtException | IllegalArgumentException e) {
             throw new TokenException(TokenErrorResult.INVALID_TOKEN);
         }
     }

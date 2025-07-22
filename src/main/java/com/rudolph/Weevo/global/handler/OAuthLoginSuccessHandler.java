@@ -71,7 +71,6 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
             log.info("신규 유저입니다.");
 
             member = Member.builder()
-                    .memberId(UUID.randomUUID())
                     .nickName(name)
                     .provider(provider)
                     .providerId(providerId)
@@ -80,14 +79,14 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
             memberRepository.save(member);
 
             //토큰 발급
-            String refreshToken = jwtUtil.generateRefreshToken(member.getMemberId(),REFRESH_TOKEN_EXPIRATION_TIME);
+            String refreshToken = jwtUtil.generateRefreshToken(member.getId(),REFRESH_TOKEN_EXPIRATION_TIME);
             refreshTokenRepository.save(
                     RefreshToken.builder()
-                    .memberId(member.getMemberId())
+                    .memberId(member.getId())
                             .token(refreshToken)
                             .build()
             );
-            String accessToken = jwtUtil.generateAccessToken(member.getMemberId(), ACCESS_TOKEN_EXPIRATION_TIME);
+            String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
 
             //추가 정보 입력 페이지로 리다이렉트
             String redirectUri = "http://localhost:3000/signup/additional?accessToken=" + accessToken;
@@ -96,7 +95,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         } else {
             // 기존 유저인경우 -> 리프레쉬 토큰 삭제
             log.info("기존 유저입니다.");
-            refreshTokenRepository.deleteByMemberId(existMember.getMemberId());
+            refreshTokenRepository.deleteByMemberId(existMember.getId());
             member = existMember;
         }
 
@@ -105,16 +104,16 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         log.info("PROVIDER_ID : {}", providerId);
 
         //리프레쉬 토큰을 발급 후 저장
-        String refreshToken =  jwtUtil.generateRefreshToken(member.getMemberId(), REFRESH_TOKEN_EXPIRATION_TIME);
+        String refreshToken =  jwtUtil.generateRefreshToken(member.getId(), REFRESH_TOKEN_EXPIRATION_TIME);
 
         RefreshToken newRefreshToken = RefreshToken.builder()
-                .memberId(member.getMemberId())
+                .memberId(member.getId())
                 .token(refreshToken)
                 .build();
         refreshTokenRepository.save(newRefreshToken);
 
         //엑세스 토큰 발급
-        String accessToken = jwtUtil.generateAccessToken(member.getMemberId(), ACCESS_TOKEN_EXPIRATION_TIME);
+        String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
 
         //이름, 엑세스 토큰, 리프레쉬 토큰을 담아 리다이렉트
         String encodedName = URLEncoder.encode(name, "UTF-8");

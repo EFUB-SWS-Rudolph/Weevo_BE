@@ -40,12 +40,12 @@ public class MemberService {
     private final MemberTagRepository memberTagRepository;
     private final MemberTalentTagRepository memberTalentTagRepository;
 
-    //추가 회원 정보 가입
+    // 1) 추가 회원 정보 가입
     @Transactional
     public void submitAdditionalInfo(CustomUserPrincipal principal, InfoRequest request){
 
-        UUID memberId = principal.getMemberId();
-        Member member = memberRepository.findByMemberId(memberId)
+        Long memberId = principal.getMemberId();
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
 
@@ -67,7 +67,8 @@ public class MemberService {
         );
     }
 
-    //이화인 목록 조회
+    // 2) 이화인 목록 조회
+    @Transactional(readOnly = true)
     public List<MemberListResponse> findMembers(String nickName, String department, String college,
                                                 Boolean coffeeChat, Boolean donation, Boolean exchange,
                                                 String sortDirection){
@@ -78,42 +79,37 @@ public class MemberService {
         } else {
             sort = Sort.by(Sort.Direction.ASC, "createdAt");  // 예: createdAt 기준 오름차순 정렬
         }
-        List<MemberListResponse> members = memberRepository.findByMembersWithFilters(nickName, department, college, coffeeChat, donation,
+        return memberRepository.findByMembersWithFilters(nickName, department, college, coffeeChat, donation,
                 exchange, sort);
-        return members;
     }
 
-    //이화인 개별 조회
-    public MemberDetailResponse findMemberDetail(UUID memberId){
-        Member member = memberRepository.findByMemberId(memberId)
+    // 3) 이화인 상세 조회
+    @Transactional(readOnly = true)
+    public MemberDetailResponse findMemberDetail(Long memberId){
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
         return MemberDetailResponse.from(member);
     }
 
+    // 4) Member 객체
     @Transactional(readOnly = true)
-    public Member findMember(UUID memberId){
-        return memberRepository.findByMemberId(memberId)
+    public Member findMember(Long memberId){
+        return memberRepository.findById(memberId)
                 .orElseThrow(()-> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-    }
-
-    @Transactional(readOnly = true)
-    public Member findMemberById(Long userId) {
-        return memberRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
     
 
     @Transactional(readOnly = true) //프로필 정보 조회
     public UserProfileDto getMyProfile(CustomUserPrincipal principal) {
         // 로그인된 사용자 ID 사용
-        UUID memberId = principal.getMemberId();
+        Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
         return UserProfileDto.from(member);
     }
 
     @Transactional  //프로필 수정 (관심 태그, 사진 제외)
     public UserProfileDto fixMyProfile(CustomUserPrincipal principal, FixProfileRequestDto requestDto) {
-        UUID memberId = principal.getMemberId();
+        Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
         member.updateProfile(requestDto);
         return UserProfileDto.from(member);
@@ -121,7 +117,7 @@ public class MemberService {
 
     @Transactional //관심 태그 수정
     public MemberInterestTagDto updateInterestTag(CustomUserPrincipal principal, UpdateInterestTagRequestDto requestDto) {
-        UUID memberId = principal.getMemberId();
+        Lomg memberId = principal.getMemberId();
         Member member = findMember(memberId);
 
         //기존 관심 태그 제거

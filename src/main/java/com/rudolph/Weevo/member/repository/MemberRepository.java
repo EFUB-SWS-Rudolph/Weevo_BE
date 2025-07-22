@@ -10,8 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
-    @Query("SELECT m FROM Member m WHERE m.memberId = :memberId")
-    Optional<Member> findByMemberId(UUID memberId);
 
     Member findByProviderId(String providerId);
 

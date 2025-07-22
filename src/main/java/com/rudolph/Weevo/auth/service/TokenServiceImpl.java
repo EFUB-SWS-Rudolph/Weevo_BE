@@ -25,8 +25,8 @@ public class TokenServiceImpl implements TokenService{
     @Override
     public TokenResponse reissueAccessToken(String authorizationHeader){
         String refreshToken = jwtUtil.getTokenFromHeader(authorizationHeader);
-        String memberId = jwtUtil.getMemberIdFromToken(refreshToken);
-        RefreshToken existRefreshToken = refreshTokenRepository.findByMemberId(UUID.fromString(memberId));
+        Long memberId = jwtUtil.getMemberIdFromToken(refreshToken);
+        RefreshToken existRefreshToken = refreshTokenRepository.findByMemberId(memberId);
         String accessToken = null;
 
         if(!existRefreshToken.getToken().equals(refreshToken) || jwtUtil.isTokenExpired(refreshToken)){
@@ -34,7 +34,7 @@ public class TokenServiceImpl implements TokenService{
             throw new TokenException(TokenErrorResult.INVALID_REFRESH_TOKEN);
         } else {
             //엑세스 토큰 재발급
-            accessToken = jwtUtil.generateAccessToken(UUID.fromString(memberId), ACCESS_TOKEN_EXPIRATION_TIME);
+            accessToken = jwtUtil.generateAccessToken(memberId, ACCESS_TOKEN_EXPIRATION_TIME);
         }
 
         return TokenResponse.builder()
