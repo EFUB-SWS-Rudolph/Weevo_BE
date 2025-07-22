@@ -29,7 +29,10 @@
         COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", " 강의가 존재하지 않습니다."),
 
         // 알림
-        ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "알림이 존재하지 않습니다.");
+        ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "알림이 존재하지 않습니다."),
+
+        //태그
+        TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "알림이 존재하지 않습니다.");
 
         private final HttpStatus httpStatus;
         private final String code;

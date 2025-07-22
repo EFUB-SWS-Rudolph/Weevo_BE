@@ -1,9 +1,9 @@
 package com.rudolph.Weevo.course.domain;
 
-import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.course.domain.enums.CourseCategory;
 import com.rudolph.Weevo.course.domain.enums.CourseStatus;
 import com.rudolph.Weevo.course.domain.enums.CourseType;
+import com.rudolph.Weevo.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
