@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.member.controller;
 
+import com.rudolph.Weevo.auth.service.AuthService;
 import com.rudolph.Weevo.global.common.api.ApiResponse;
 import com.rudolph.Weevo.global.common.code.SuccessStatus;
 import com.rudolph.Weevo.member.dto.request.UpdateTalentTagRequestDto;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Member", description = "마이페이지 관련 api")
 public class MyPageController {
     private final MemberService memberService;
+    private final AuthService authService;
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getMyProfile(@AuthenticationPrincipal CustomUserPrincipal principal) {
@@ -69,7 +71,7 @@ public class MyPageController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@AuthenticationPrincipal CustomUserPrincipal principal, @RequestHeader("Authorization") String authHeader) {
         String accessToken = authHeader.replace("Bearer ", "");
-        memberService.logout(principal, accessToken);
+        authService.logout(principal, accessToken);
 
         return ResponseEntity.ok().build();
     }

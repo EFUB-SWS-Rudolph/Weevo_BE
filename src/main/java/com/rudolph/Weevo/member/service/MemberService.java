@@ -163,40 +163,6 @@ public class MemberService {
         return MemberTalentTagDto.from(member, newTalentTags);
     }
 
-    @Transactional                  //accessToken 프론트에서 받아와야하나?
-    public void logout(CustomUserPrincipal principal, String accessToken) {
-        Member member = findMember(principal.getMemberId());
-
-        String provider = member.getProvider();
-
-        if ("kakao".equals(provider)) {
-            logoutFromProvider(provider, accessToken);
-        } else {
-            logoutFromProvider(provider, accessToken);
-        }
-    }
-
-    public void logoutFromProvider(String provider, String accessToken) {
-        try {
-            if ("kakao".equals(provider)) {
-                WebClient.create("https://kapi.kakao.com/v1/user/logout")
-                        .post()
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();   // 동기처리
-            } else {
-                WebClient.create("https://oauth2.googleapis.com/revoke?token=" + accessToken)
-                        .post()
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();
-            }
-        } catch (WebClientResponseException e) {
-            log.error("카카오 로그아웃 실패: {}", e.getMessage());
-        }
-    }
-
     @Transactional
     public String updateProfileImage(CustomUserPrincipal principal, MultipartFile imageFile) {
         Long memberId = principal.getMemberId();
