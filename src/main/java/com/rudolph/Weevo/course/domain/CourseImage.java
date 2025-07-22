@@ -7,7 +7,6 @@ import lombok.*;
 @Builder
 @Getter
 @AllArgsConstructor
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CourseImage {
     @Id
