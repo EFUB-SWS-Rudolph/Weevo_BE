@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class MemberInterestTagDto {
-    private UUID memberId;
+    private Long memberId;
     private List<String> tagNames;
 
     public static MemberInterestTagDto from(Member member, List<MemberInterestTag> interestTags) {
@@ -19,6 +19,6 @@ public class MemberInterestTagDto {
                 .map(interestTag -> interestTag.getTag().getName())
                 .toList();
 
-        return new MemberInterestTagDto(member.getMemberId(), tagNames);
+        return new MemberInterestTagDto(member.getId(), tagNames);
     }
 }
