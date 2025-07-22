@@ -8,7 +8,6 @@ import com.rudolph.Weevo.course.repository.CourseBookmarkRepository;
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.course.domain.Course;
 import com.rudolph.Weevo.course.domain.MemberCourse;
-import com.rudolph.Weevo.course.dto.response.MyCourseListDto;
 import com.rudolph.Weevo.course.repository.CourseRepository;
 import com.rudolph.Weevo.course.repository.CourseSpecification;
 import com.rudolph.Weevo.member.domain.Member;
@@ -237,6 +236,14 @@ public class CourseService {
                 .build();
     }
 
+    // 9) 내가 찜한 강의 조회
+    @Transactional(readOnly = true)
+    public MyCourseListDto getMyBookmarkCourses(Long memberId) {
+
+        //찜한 강의 목록
+        List<Course> bookmarkedCourses = bookmarkRepository.findAllBookmarkedByMemberId(memberId);
+        return MyCourseListDto.from(bookmarkedCourses);
+    }
 }
 
 

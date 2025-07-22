@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.course.repository;
 
+import com.rudolph.Weevo.course.domain.Course;
 import com.rudolph.Weevo.course.domain.CourseBookmark;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -32,4 +34,7 @@ public interface CourseBookmarkRepository extends JpaRepository<CourseBookmark, 
         return findBookmarkCountIn(ids).stream()
                 .collect(Collectors.toMap(t -> (Long) t[0], t -> (Long) t[1]));
     }
+
+    // 6) 사용자가 북마크한 강의 목록 조회
+    List<Course> findAllBookmarkedByMemberId(Long memberId);
 }
