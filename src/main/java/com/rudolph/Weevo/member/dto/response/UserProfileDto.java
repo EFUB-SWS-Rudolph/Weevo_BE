@@ -22,7 +22,7 @@ public class UserProfileDto {
 
     public static UserProfileDto from(Member member) {
         return UserProfileDto.builder()
-                .memberId(member.getMemberId().toString())
+                .memberId(member.getId().toString())
                 .nickname(member.getNickName())
                 .studentId(member.getStudentId())
                 .location(member.getLocation())
