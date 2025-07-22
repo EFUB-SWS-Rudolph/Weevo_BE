@@ -36,11 +36,10 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
                 if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
                     jwtToken = jwtToken.substring(7);
-                    String memberId = jwtUtil.getMemberIdFromToken(jwtToken);
-                    UUID uuid = UUID.fromString(memberId);
+                    Long memberId = jwtUtil.getMemberIdFromToken(jwtToken);
                     Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
 
-                    CustomUserPrincipal principal = new CustomUserPrincipal(uuid, authorities);
+                    CustomUserPrincipal principal = new CustomUserPrincipal(memberId, authorities);
                     Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, authorities);
 
                     accessor.setUser(authentication);

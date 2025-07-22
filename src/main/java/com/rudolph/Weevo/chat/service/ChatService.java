@@ -32,7 +32,7 @@ public class ChatService {
     public void saveMessage(ChatMessage message) {
         ChatRoom chatRoom = chatRoomService.findChatRoom(message.getChatRoomId());
 
-        Member sender = memberService.findMemberById(message.getSenderId());
+        Member sender = memberService.findMember(message.getSenderId());
 
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)

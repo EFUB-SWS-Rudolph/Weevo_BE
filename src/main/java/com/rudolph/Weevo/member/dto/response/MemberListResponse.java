@@ -14,7 +14,7 @@ public class MemberListResponse {
 
     private static final String DEFAULT_PROFILE_IMAGE_URL = "/images/스크린샷 2025-07-20 오전 1.33.39.png";
 
-    private UUID memberId;
+    private Long memberId;
     private String nickName;
     private String department;
     private String college;
@@ -34,7 +34,7 @@ public class MemberListResponse {
         }  //테스트를 위해 넣은 코드라 나중에 빼주세요
 
         return MemberListResponse.builder()
-                .memberId(member.getMemberId())
+                .memberId(member.getId())
                 .nickName(member.getNickName())
                 .department(member.getDepartment())
                 .college(member.getCollege())

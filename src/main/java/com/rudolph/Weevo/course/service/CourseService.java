@@ -44,9 +44,9 @@ public class CourseService {
     private final S3Service s3Service;
 
     // 1) 강의 생성
-    public CourseResponse createCourse(CreateCourseRequest req, UUID teacherUuid) {
+    public CourseResponse createCourse(CreateCourseRequest req, Long teacherId) {
 
-        Member teacher = memberRepository.findByMemberId(teacherUuid)
+        Member teacher = memberRepository.findById(teacherId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         Course course = Course.builder()
@@ -80,9 +80,9 @@ public class CourseService {
     }
 
     // 2) 강의 찜하기
-    public void addBookmark(UUID memberUuid, Long courseId) {
+    public void addBookmark(Long memberId, Long courseId) {
 
-        Member member = memberRepository.findByMemberId(memberUuid)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         Course course = courseRepository.findById(courseId)
@@ -99,8 +99,8 @@ public class CourseService {
     }
 
     // 3) 찜 취소
-    public void removeBookmark(UUID memberUuid, Long courseId) {
-        Member member = memberRepository.findByMemberId(memberUuid)
+    public void removeBookmark(Long memberId, Long courseId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         bookmarkRepository.deleteByMemberIdAndCourseId(member.getId(), courseId);
@@ -171,7 +171,7 @@ public class CourseService {
 
     // 6) 강의 상세 조회
     @Transactional(readOnly = true)
-    public CourseDetailResponse getCourseDetail(Long courseId, UUID memberUuid) {
+    public CourseDetailResponse getCourseDetail(Long courseId, Long memberId) {
 
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
@@ -179,7 +179,7 @@ public class CourseService {
         long bookmarkCnt = bookmarkRepository.countByCourseId(courseId);
 
         // 로그인 사용자가 강의를 찜했는지 여부
-        Member member = memberRepository.findByMemberId(memberUuid)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         boolean myBookmark = bookmarkRepository
@@ -190,13 +190,13 @@ public class CourseService {
 
     // 7) 강의 성사
     @Transactional
-    public void confirmCourse(Long courseId, UUID teacherId, Long studentId) {
+    public void confirmCourse(Long courseId, Long teacherId, Long studentId) {
 
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
 
         // 진행자 권한 검증
-        if (!course.getTeacher().getMemberId().equals(teacherId)) {
+        if (!course.getTeacher().getId().equals(teacherId)) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED_COURSE_CONFIRM);
         }
 
@@ -217,9 +217,9 @@ public class CourseService {
 
     // 8) 내 강의 조회
     @Transactional(readOnly = true)
-    public MyCoursesResponse listMyCourses(UUID memberUuid) {
+    public MyCoursesResponse listMyCourses(Long memberId) {
 
-        Member me = memberRepository.findByMemberId(memberUuid)
+        Member me = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         List<CourseSummaryResponse> teaching = me.getCourses().stream()

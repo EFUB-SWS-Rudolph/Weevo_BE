@@ -26,27 +26,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException{
-        String header = request.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
+                                    FilterChain chain) throws ServletException, IOException {
 
-        if(header != null && header.startsWith("Bearer ")) {
+        String header = req.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            try{
-                String memberId = jwtUtil.getMemberIdFromToken(token);
-                //인증객체 생성
-                UUID uuid = UUID.fromString(memberId);
-                Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
-                CustomUserPrincipal principal = new CustomUserPrincipal(uuid, authorities);
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        principal, null, principal.getAuthorities()
-                );
+            try {
+                Long id = jwtUtil.getMemberIdFromToken(token);
+                CustomUserPrincipal principal =
+                        new CustomUserPrincipal(id, Collections.emptyList());
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            } catch (Exception e){
+            } catch (Exception e) {
                 log.warn("JWT 인증 실패: {}", e.getMessage());
             }
         }
-        filterChain.doFilter(request,response);
+        chain.doFilter(req, res);
     }
 }
