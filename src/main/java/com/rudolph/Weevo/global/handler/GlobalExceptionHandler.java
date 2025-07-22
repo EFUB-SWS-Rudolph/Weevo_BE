@@ -65,4 +65,11 @@ public class GlobalExceptionHandler {
         log.error("Unhandled exception:", e);
         return ApiResponse.onFailure(ErrorStatus._INTERNAL_SERVER_ERROR);
     }
+
+    // 7) generalException
+    @ExceptionHandler(GeneralException.class)
+    public ResponseEntity<ApiResponse<Object>> handleGeneralException(GeneralException ex) {
+        log.error("GeneralException: {}", ex.getMessage()); // 로그도 남겨주면 좋음
+        return ApiResponse.onFailure(ex.getStatus());
+    }
 }

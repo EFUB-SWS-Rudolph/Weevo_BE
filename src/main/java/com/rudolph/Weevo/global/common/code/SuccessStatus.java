@@ -14,7 +14,10 @@ public enum SuccessStatus implements BaseCode {
     _CREATED(HttpStatus.CREATED, "201", "생성에 성공했습니다."),
 
     //커스텀
-    _CREATED_ACCESS_TOKEN(HttpStatus.CREATED, "201", "엑세스 토큰 재발급에 성공했습니다.");
+    _CREATED_ACCESS_TOKEN(HttpStatus.CREATED, "201", "엑세스 토큰 재발급에 성공했습니다."),
+    _MEMBER_LIST_RETRIEVED(HttpStatus.OK, "200", "이화인 목록 조회 성공"),
+    _DETAIL_RETRIVED(HttpStatus.OK, "200", "이화인 상세 조회 성공"),
+    _ADDITIONAL_INFO_SUBMITTED(HttpStatus.OK, "200", "추가정보 입력에 성공했습니다.");;
 
     private final HttpStatus httpStatus;
     private final String code;
