@@ -116,7 +116,7 @@ public class MemberService {
 
     @Transactional //관심 태그 수정
     public MemberInterestTagDto updateInterestTag(CustomUserPrincipal principal, UpdateInterestTagRequestDto requestDto) {
-        Lomg memberId = principal.getMemberId();
+        Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
 
         //기존 관심 태그 제거
