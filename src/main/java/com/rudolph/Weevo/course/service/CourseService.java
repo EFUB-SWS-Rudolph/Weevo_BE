@@ -236,18 +236,6 @@ public class CourseService {
                 .enrolledCourses(enrolled)
                 .build();
     }
-  
-//     @Transactional(readOnly = true)     //내 강의 조회
-//     public MyCourseListDto getMyCourseList(CustomUserPrincipal principal) {
-//         UUID memberId = principal.getMemberId();
-//         Member member = memberRepository.findByMemberId(memberId)
-//                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-//         List<MemberCourse> memberCourses = memberCourseRepository.findAllByMember(member);
-//         List<Course> myCourses = memberCourses.stream()
-//                 .map(MemberCourse::getCourse)
-//                 .toList();
-//         return MyCourseListDto.from(myCourses);
-    }
 
 }
 
