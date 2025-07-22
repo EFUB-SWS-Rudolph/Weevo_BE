@@ -10,7 +10,6 @@ import com.rudolph.Weevo.chat.service.ChatRoomService;
 import com.rudolph.Weevo.chat.service.ChatService;
 import com.rudolph.Weevo.chat.service.kafka.KafkaProducer;
 import com.rudolph.Weevo.member.domain.Member;
-import com.rudolph.Weevo.member.repository.MemberRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

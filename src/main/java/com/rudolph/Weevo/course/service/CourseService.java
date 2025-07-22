@@ -5,7 +5,10 @@ import com.rudolph.Weevo.course.dto.request.CreateCourseRequest;
 import com.rudolph.Weevo.course.dto.response.*;
 import com.rudolph.Weevo.course.domain.*;
 import com.rudolph.Weevo.course.repository.CourseBookmarkRepository;
+import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.course.domain.Course;
+import com.rudolph.Weevo.course.domain.MemberCourse;
+import com.rudolph.Weevo.course.dto.response.MyCourseListDto;
 import com.rudolph.Weevo.course.repository.CourseRepository;
 import com.rudolph.Weevo.course.repository.CourseSpecification;
 import com.rudolph.Weevo.member.domain.Member;
@@ -13,6 +16,7 @@ import com.rudolph.Weevo.member.repository.MemberRepository;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.global.service.S3Service;
+import com.rudolph.Weevo.course.repository.MemberCourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -33,6 +40,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final MemberRepository memberRepository;
     private final CourseBookmarkRepository bookmarkRepository;
+    private final MemberCourseRepository memberCourseRepository;
     private final S3Service s3Service;
 
     // 1) 강의 생성
@@ -227,6 +235,18 @@ public class CourseService {
                 .teachingCourses(teaching)
                 .enrolledCourses(enrolled)
                 .build();
+    }
+  
+//     @Transactional(readOnly = true)     //내 강의 조회
+//     public MyCourseListDto getMyCourseList(CustomUserPrincipal principal) {
+//         UUID memberId = principal.getMemberId();
+//         Member member = memberRepository.findByMemberId(memberId)
+//                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+//         List<MemberCourse> memberCourses = memberCourseRepository.findAllByMember(member);
+//         List<Course> myCourses = memberCourses.stream()
+//                 .map(MemberCourse::getCourse)
+//                 .toList();
+//         return MyCourseListDto.from(myCourses);
     }
 
 }

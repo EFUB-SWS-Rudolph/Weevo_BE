@@ -3,6 +3,7 @@ package com.rudolph.Weevo.member.domain;
 import com.rudolph.Weevo.course.domain.Course;
 import com.rudolph.Weevo.course.domain.MemberCourse;
 import com.rudolph.Weevo.global.domain.BaseEntity;
+import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.tag.domain.Tag;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,7 +34,6 @@ public class Member extends BaseEntity {
     @Column(name = "provider_id", nullable = false, length = 50) //kakao에서 이메일을 받을 수 없으므로 providerId를 통해 유저 구분
     private String providerId;
 
-  
     private String studentId;
     private String department;
     private String college;
@@ -45,15 +45,19 @@ public class Member extends BaseEntity {
     private Boolean exchange;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberInterestTag> interestTags = new ArrayList<>();
+    @Builder.Default
+    private List<com.rudolph.Weevo.member.domain.MemberInterestTag> interestTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberTalentTag> talentTags = new ArrayList<>();
+    @Builder.Default
+    private List<com.rudolph.Weevo.member.domain.MemberTalentTag> talentTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher")        //강의 개설 user:course = 1:N
+    @Builder.Default
     private List<Course> courses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")         //유저:강의 = N:M (수강)
+    @OneToMany(mappedBy = "member")
+    @Builder.Default                                        //유저:강의 = N:M (수강)
     private List<MemberCourse> memberCourses = new ArrayList<>();
 
     public void additionalInfo(String nickName, String studentId, String college, String department, String email,
@@ -82,6 +86,31 @@ public class Member extends BaseEntity {
                         .tag(tag)
                         .build())
         );
+    }
+
+    public void updateProfile(FixProfileRequestDto dto) {
+        if (dto.getNickname() != null) {
+            this.nickName = dto.getNickname();
+        }
+        if (dto.getDept() != null) {
+            this.department = dto.getDept();
+        }
+        if (dto.getStudentId() != null) {
+            this.studentId = dto.getStudentId();
+        }
+        if (dto.getLocation() != null) {
+            this.location = dto.getLocation();
+        }
+        if (dto.getIsExchange() != null) {
+            this.exchange = dto.getIsExchange();
+        }
+        if (dto.getIsCoffeeChat() != null) {
+            this.coffeeChat = dto.getIsCoffeeChat();
+        }
+        if (dto.getIsSkillDonation() != null) {
+            this.donation = dto.getIsSkillDonation();
+        }
+
     }
 
 }

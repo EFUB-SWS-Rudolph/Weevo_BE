@@ -14,15 +14,30 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.rudolph.Weevo.member.domain.MemberInterestTag;
+import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
+import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
+import com.rudolph.Weevo.member.dto.response.MemberInterestTagDto;
+import com.rudolph.Weevo.member.dto.response.UserProfileDto;
+import com.rudolph.Weevo.member.repository.MemberInterestTagRepository;
+import com.rudolph.Weevo.member.repository.MemberTagRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final TagService tagService;
+    private final MemberInterestTagRepository memberInterestTagRepository;
+    private final MemberTagRepository memberTagRepository;
 
     // 1) 추가 회원 정보 가입
     @Transactional
@@ -80,6 +95,80 @@ public class MemberService {
     public Member findMember(Long memberId){
         return memberRepository.findById(memberId)
                 .orElseThrow(()-> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+    
+
+    @Transactional(readOnly = true) //프로필 정보 조회
+    public UserProfileDto getMyProfile(CustomUserPrincipal principal) {
+        // 로그인된 사용자 ID 사용
+        Long memberId = principal.getMemberId();
+        Member member = findMember(memberId);
+        return UserProfileDto.from(member);
+    }
+
+    @Transactional  //프로필 수정 (관심 태그, 사진 제외)
+    public UserProfileDto fixMyProfile(CustomUserPrincipal principal, FixProfileRequestDto requestDto) {
+        Long memberId = principal.getMemberId();
+        Member member = findMember(memberId);
+        member.updateProfile(requestDto);
+        return UserProfileDto.from(member);
+    }
+
+    @Transactional //관심 태그 수정
+    public MemberInterestTagDto updateInterestTag(CustomUserPrincipal principal, UpdateInterestTagRequestDto requestDto) {
+        Lomg memberId = principal.getMemberId();
+        Member member = findMember(memberId);
+
+        //기존 관심 태그 제거
+        memberInterestTagRepository.deleteByMember(member);
+
+        //새로 설정된 태그 추가
+        List<MemberInterestTag> newInterestTags = new ArrayList<>();
+        for (Long tagId: requestDto.getTagIds()) {
+            Tag tag = memberTagRepository.findById(tagId)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
+            newInterestTags.add(
+                    MemberInterestTag.builder()
+                    .member(member)
+                    .tag(tag)
+                    .build());
+        }
+        memberInterestTagRepository.saveAll(newInterestTags);
+        return MemberInterestTagDto.from(member, newInterestTags);
+    }
+
+    @Transactional                  //accessToken 프론트에서 받아와야하나?
+    public void logout(CustomUserPrincipal principal, String accessToken) {
+        Member member = findMember(principal.getMemberId());
+
+        String provider = member.getProvider();
+
+        if ("kakao".equals(provider)) {
+            logoutFromProvider(provider, accessToken);
+        } else {
+            logoutFromProvider(provider, accessToken);
+        }
+    }
+
+    public void logoutFromProvider(String provider, String accessToken) {
+        try {
+            if ("kakao".equals(provider)) {
+                WebClient.create("https://kapi.kakao.com/v1/user/logout")
+                        .post()
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();   // 동기처리
+            } else {
+                WebClient.create("https://oauth2.googleapis.com/revoke?token=" + accessToken)
+                        .post()
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+            }
+        } catch (WebClientResponseException e) {
+            log.error("카카오 로그아웃 실패: {}", e.getMessage());
+        }
     }
 
 }
