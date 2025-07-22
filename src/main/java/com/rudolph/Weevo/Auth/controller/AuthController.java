@@ -28,7 +28,7 @@ public class AuthController {
                     - 소셜 로그인 성공 시, 서버는 다음 형식으로 프론트로 리디렉트합니다:
                     
                     ```
-                    ${JWT_REDIRECT}?accessToken={accessToken}&refreshToken={refreshToken}&isFirst={true|false}
+                    ${JWT_REDIRECT}?accessToken={accessToken}
                     ```
                     """
     )
