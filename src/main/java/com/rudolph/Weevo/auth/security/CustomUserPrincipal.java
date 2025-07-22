@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CustomUserPrincipal implements UserDetails {
 
-    private UUID memberId;
+    private Long memberId;
     private Collection<? extends GrantedAuthority> authorities;
 
     //userdetails 필수 메서드

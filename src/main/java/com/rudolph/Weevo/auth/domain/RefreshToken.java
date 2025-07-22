@@ -19,9 +19,8 @@ public class RefreshToken extends BaseEntity {
     @Column(name = "refresh_token_id")
     private Long id;
 
-    //어느 유저의 리프레쉬 토큰인지 알기 위해 memberId를 함께 저장
-    @Column(name = "member_uuid", columnDefinition = "BINARY(16)", unique = true)
-    private UUID memberId;
+    @Column(name = "member_id", nullable = false, unique = true)
+    private Long memberId;
 
     @Column(name = "token", nullable = false)
     private String token;

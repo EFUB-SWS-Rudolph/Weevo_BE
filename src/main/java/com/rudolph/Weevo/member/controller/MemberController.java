@@ -18,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,7 +50,7 @@ public class MemberController {
             @RequestParam(defaultValue = "desc") String sort,
             @AuthenticationPrincipal CustomUserPrincipal user
     ){
-        UUID memberId = user.getMemberId();
+        Long memberId = user.getMemberId();
         List<MemberListResponse> result = memberService.findMembers(
                 nickName, department, college, coffeeChat, donation, exchange, sort
         );
@@ -67,7 +66,7 @@ public class MemberController {
     ){
         Member member = memberRepository.findById(id)
                 .orElseThrow(()-> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-        UUID memberId = member.getMemberId();
+        Long memberId = member.getId();
         MemberDetailResponse result = memberService.findMemberDetail(memberId);
         return ResponseEntity.ok(result);
     }

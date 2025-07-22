@@ -24,9 +24,6 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "member_uuid", columnDefinition = "BINARY(16)", unique = true)
-    private UUID memberId;
-
     @Column(name = "nickname", nullable = false, length = 50)
     private String nickName;
 

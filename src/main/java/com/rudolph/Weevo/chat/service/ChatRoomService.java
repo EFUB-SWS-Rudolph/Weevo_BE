@@ -38,7 +38,7 @@ public class ChatRoomService {
     @Transactional(readOnly = true)
     public ChatRoomStatusDto checkChatRoomExist(CustomUserPrincipal user, Long opponentId, Long courseId) {
         Member sender = memberService.findMember(user.getMemberId());
-        Member receiver = memberService.findMemberById(opponentId);
+        Member receiver = memberService.findMember(opponentId);
 
         Optional<ChatRoom> existingRoom;
         if (courseId != null) {
@@ -57,7 +57,7 @@ public class ChatRoomService {
 
     public void createChatRoom(CustomUserPrincipal user, ChatRoomCreateRequestDto request) {
         Member sender = memberService.findMember(user.getMemberId());
-        Member receiver = memberService.findMemberById(request.getOpponentId());
+        Member receiver = memberService.findMember(request.getOpponentId());
 
         Course course;
         ChatCategory category;
