@@ -3,7 +3,7 @@ package com.rudolph.Weevo.chat.dto.summary;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rudolph.Weevo.chat.domain.Chat;
 import com.rudolph.Weevo.chat.domain.ChatRoom;
-import com.rudolph.Weevo.temp.domain.Member;
+import com.rudolph.Weevo.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.temp.dto.response;
+package com.rudolph.Weevo.member.dto.response;
 
-import com.rudolph.Weevo.temp.domain.Member;
+import com.rudolph.Weevo.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

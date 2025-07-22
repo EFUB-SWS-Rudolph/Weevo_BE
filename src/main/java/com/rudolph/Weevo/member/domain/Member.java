@@ -1,9 +1,9 @@
-package com.rudolph.Weevo.temp.domain;
+package com.rudolph.Weevo.member.domain;
 
 import com.rudolph.Weevo.course.domain.Course;
 import com.rudolph.Weevo.course.domain.MemberCourse;
 import com.rudolph.Weevo.global.domain.BaseEntity;
-import com.rudolph.Weevo.temp.dto.request.FixProfileRequestDto;
+import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.tag.domain.Tag;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,11 +45,11 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<com.rudolph.Weevo.temp.domain.MemberInterestTag> interestTags = new ArrayList<>();
+    private List<com.rudolph.Weevo.member.domain.MemberInterestTag> interestTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<com.rudolph.Weevo.temp.domain.MemberTalentTag> talentTags = new ArrayList<>();
+    private List<com.rudolph.Weevo.member.domain.MemberTalentTag> talentTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher")        //강의 개설 user:course = 1:N
     @Builder.Default

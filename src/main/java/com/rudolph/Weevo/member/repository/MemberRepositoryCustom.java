@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.temp.repository;
+package com.rudolph.Weevo.member.repository;
 
-import com.rudolph.Weevo.temp.dto.response.MemberListResponse;
+import com.rudolph.Weevo.member.dto.response.MemberListResponse;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;

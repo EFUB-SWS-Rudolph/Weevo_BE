@@ -1,7 +1,7 @@
-package com.rudolph.Weevo.temp.dto.response;
+package com.rudolph.Weevo.member.dto.response;
 
-import com.rudolph.Weevo.temp.domain.Member;
-import com.rudolph.Weevo.temp.domain.MemberInterestTag;
+import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.member.domain.MemberInterestTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

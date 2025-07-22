@@ -1,6 +1,6 @@
 package com.rudolph.Weevo.course.repository;
 
-import com.rudolph.Weevo.temp.domain.Member;
+import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.course.domain.MemberCourse;
 import org.springframework.data.jpa.repository.JpaRepository;
 

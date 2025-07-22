@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.temp.dto.request;
+package com.rudolph.Weevo.member.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

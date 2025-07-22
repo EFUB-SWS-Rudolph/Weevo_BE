@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.temp.dto.request;
+package com.rudolph.Weevo.member.dto.request;
 
 import lombok.Getter;
 

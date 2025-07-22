@@ -1,14 +1,14 @@
-package com.rudolph.Weevo.temp.controller;
+package com.rudolph.Weevo.member.controller;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
-import com.rudolph.Weevo.temp.dto.response.MemberDetailResponse;
-import com.rudolph.Weevo.temp.dto.response.MemberListResponse;
-import com.rudolph.Weevo.temp.repository.MemberRepository;
-import com.rudolph.Weevo.temp.service.MemberService;
+import com.rudolph.Weevo.member.dto.response.MemberDetailResponse;
+import com.rudolph.Weevo.member.dto.response.MemberListResponse;
+import com.rudolph.Weevo.member.repository.MemberRepository;
+import com.rudolph.Weevo.member.service.MemberService;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
-import com.rudolph.Weevo.temp.domain.Member;
-import com.rudolph.Weevo.temp.dto.request.InfoRequest;
+import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.member.dto.request.InfoRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

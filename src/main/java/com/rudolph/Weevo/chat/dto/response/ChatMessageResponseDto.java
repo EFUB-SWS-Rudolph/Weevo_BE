@@ -5,7 +5,7 @@ import com.rudolph.Weevo.chat.dto.summary.CourseSummary;
 import com.rudolph.Weevo.chat.dto.summary.MessageSummary;
 import com.rudolph.Weevo.chat.dto.summary.OpponentSummary;
 import com.rudolph.Weevo.course.domain.Course;
-import com.rudolph.Weevo.temp.domain.Member;
+import com.rudolph.Weevo.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 
