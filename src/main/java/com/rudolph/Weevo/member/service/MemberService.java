@@ -2,27 +2,27 @@ package com.rudolph.Weevo.member.service;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.member.domain.Member;
-import com.rudolph.Weevo.member.domain.MemberInterestTag;
-import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.member.dto.request.InfoRequest;
-import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
 import com.rudolph.Weevo.member.dto.response.MemberDetailResponse;
-import com.rudolph.Weevo.member.dto.response.MemberInterestTagDto;
 import com.rudolph.Weevo.member.dto.response.MemberListResponse;
-import com.rudolph.Weevo.member.dto.response.UserProfileDto;
-import com.rudolph.Weevo.member.repository.MemberInterestTagRepository;
 import com.rudolph.Weevo.member.repository.MemberRepository;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
-import com.rudolph.Weevo.member.repository.MemberTagRepository;
 import com.rudolph.Weevo.tag.domain.Tag;
 import com.rudolph.Weevo.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.rudolph.Weevo.member.domain.MemberInterestTag;
+import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
+import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
+import com.rudolph.Weevo.member.dto.response.MemberInterestTagDto;
+import com.rudolph.Weevo.member.dto.response.UserProfileDto;
+import com.rudolph.Weevo.member.repository.MemberInterestTagRepository;
+import com.rudolph.Weevo.member.repository.MemberTagRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -100,6 +100,7 @@ public class MemberService {
         return memberRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
+    
 
     @Transactional(readOnly = true) //프로필 정보 조회
     public UserProfileDto getMyProfile(CustomUserPrincipal principal) {
@@ -173,4 +174,5 @@ public class MemberService {
             log.error("카카오 로그아웃 실패: {}", e.getMessage());
         }
     }
+
 }

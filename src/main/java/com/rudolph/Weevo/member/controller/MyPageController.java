@@ -1,14 +1,18 @@
-package com.rudolph.Weevo.member.controller;
+package com.rudolph.Weevo.Member.controller;
 
+import com.rudolph.Weevo.Member.dto.response.UserProfileDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
 import com.rudolph.Weevo.member.dto.response.MemberInterestTagDto;
-import com.rudolph.Weevo.member.dto.response.UserProfileDto;
 import com.rudolph.Weevo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

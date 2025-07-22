@@ -14,6 +14,12 @@
         _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "인증이 필요합니다."),
         _FORBIDDEN(HttpStatus.FORBIDDEN, "403", "금지된 요청입니다."),
 
+        // 강의
+        COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 강의입니다."),
+        INVALID_SORT(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 sort 값입니다. (latest, popular)"),
+        UNAUTHORIZED_COURSE_CONFIRM(HttpStatus.UNAUTHORIZED, "401", "해당 강의를 성사시킬 권한이 없습니다."),
+        COURSE_ALREADY_CONFIRMED(HttpStatus.BAD_REQUEST, "400", "이미 성사된 수강자입니다."),
+
         //추가 회원가입 에러
         // === 추가정보 입력 관련 에러 ===
         MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 사용자입니다."),
@@ -25,8 +31,6 @@
         CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "채팅방이 존재하지 않습니다."),
         UNAUTHORIZED_CHATROOM_ACCESS(HttpStatus.UNAUTHORIZED, "401", "채팅방에 접근할 권한이 없습니다."),
 
-        // 강의
-        COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", " 강의가 존재하지 않습니다."),
 
         // 알림
         ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "알림이 존재하지 않습니다."),
