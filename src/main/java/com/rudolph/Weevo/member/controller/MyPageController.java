@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.Member.controller;
+package com.rudolph.Weevo.member.controller;
 
-import com.rudolph.Weevo.Member.dto.response.UserProfileDto;
+import com.rudolph.Weevo.member.dto.response.UserProfileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
