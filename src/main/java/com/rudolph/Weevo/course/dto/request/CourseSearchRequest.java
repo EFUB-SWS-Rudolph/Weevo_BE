@@ -22,6 +22,7 @@ public class CourseSearchRequest {
     private CourseType courseType;
     private CourseCity courseCity;
     private CourseCategory courseCategory;
+    private String keyword;
 
     @DateTimeFormat(iso = ISO.DATE)
     private LocalDate courseStartDate;

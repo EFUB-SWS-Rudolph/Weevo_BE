@@ -19,6 +19,9 @@
         INVALID_SORT(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 sort 값입니다. (latest, popular)"),
         UNAUTHORIZED_COURSE_CONFIRM(HttpStatus.UNAUTHORIZED, "401", "해당 강의를 성사시킬 권한이 없습니다."),
         COURSE_ALREADY_CONFIRMED(HttpStatus.BAD_REQUEST, "400", "이미 성사된 수강자입니다."),
+        COURSE_CANCEL_ALREADY_REQUESTED(HttpStatus.BAD_REQUEST, "400", "이미 취소 요청을 완료했습니다."),
+        MEMBERCOURSE_NOT_FOUND       (HttpStatus.NOT_FOUND , "404", "수강 이력이 존재하지 않습니다."),
+
 
         //추가 회원가입 에러
         // === 추가정보 입력 관련 에러 ===
