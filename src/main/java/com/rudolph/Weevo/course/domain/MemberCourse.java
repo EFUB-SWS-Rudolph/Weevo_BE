@@ -4,6 +4,7 @@ import com.rudolph.Weevo.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Builder
 @Entity
 @Getter
 @AllArgsConstructor
@@ -14,8 +15,6 @@ public class MemberCourse {
     @Column(name = "member_course_id")
     private Long memberCourseId;
 
-    //completion_rate - 필요한가?
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -23,4 +22,11 @@ public class MemberCourse {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;
+
+    public static MemberCourse of(Member member, Course course) {
+        return MemberCourse.builder()
+                .member(member)
+                .course(course)
+                .build();
+    }
 }

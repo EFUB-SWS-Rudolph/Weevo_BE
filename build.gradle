@@ -55,6 +55,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 
+	// S3
+	implementation platform('software.amazon.awssdk:bom:2.20.0')
+	implementation 'software.amazon.awssdk:s3'
+
 
 	//기타
 	implementation 'org.springframework.boot:spring-boot-starter-validation'

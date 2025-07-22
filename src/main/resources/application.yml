@@ -65,12 +65,24 @@ spring:
     refresh_token:
       expiration_time: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME}  #일주일
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
 springdoc:
   swagger-ui:
     path: /swagger
     groups-order: DESC
     tags-sorter: alpha
     operations-sorter: method
+
+aws:
+  s3:
+    bucket: sws-weevo
+    region: ap-northeast-2
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
 
 message:
   topic:
