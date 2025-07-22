@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.course.domain;
 
+
 import com.rudolph.Weevo.course.domain.enums.CourseCity;
 import com.rudolph.Weevo.global.domain.BaseEntity;
 import com.rudolph.Weevo.member.domain.Member;

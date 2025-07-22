@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import com.rudolph.Weevo.course.dto.response.MyCourseListDto;
 
 import java.util.Map;
 
@@ -107,6 +108,13 @@ public class CourseController {
         MyCoursesResponse resp = courseService.listMyCourses(user.getMemberId());
         return ApiResponse.onSuccess(SuccessStatus._OK, resp);
     }
+  
+  
+//     @GetMapping("/my-course")   //내 강의 조회
+//     public ResponseEntity<MyCourseListDto> getMyCourses(@AuthenticationPrincipal CustomUserPrincipal principal) {
+//         MyCourseListDto myCourseList = courseService.getMyCourseList(principal);
+//         return ResponseEntity.ok(myCourseList);
+//     }
 
 
 }
