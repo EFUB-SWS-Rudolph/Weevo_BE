@@ -108,14 +108,17 @@ public class CourseController {
         MyCoursesResponse resp = courseService.listMyCourses(user.getMemberId());
         return ApiResponse.onSuccess(SuccessStatus._OK, resp);
     }
-  
-  
-//     @GetMapping("/my-course")   //내 강의 조회
-//     public ResponseEntity<MyCourseListDto> getMyCourses(@AuthenticationPrincipal CustomUserPrincipal principal) {
-//         MyCourseListDto myCourseList = courseService.getMyCourseList(principal);
-//         return ResponseEntity.ok(myCourseList);
-//     }
 
+    // 9) 강의 성사 취소
+    @DeleteMapping("/cancel/{courseId}/{studentId}")
+    public ResponseEntity<ApiResponse<Map<String,String>>> cancelCourse(
+            @PathVariable Long courseId,
+            @PathVariable Long studentId,
+            @AuthenticationPrincipal CustomUserPrincipal user) {
+
+        String msg = courseService.cancelCourse(courseId, studentId, user.getMemberId());
+        return ApiResponse.onSuccess(SuccessStatus._OK, Map.of("message", msg));
+    }
 
 }
 

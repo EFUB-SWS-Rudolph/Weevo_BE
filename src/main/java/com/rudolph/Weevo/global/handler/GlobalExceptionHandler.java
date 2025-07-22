@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     // 0) 도메인 예외 처리
     @ExceptionHandler(GeneralException.class)
-    public ResponseEntity<ApiResponse<Object>> handleGeneral(GeneralException e) {
+    public ResponseEntity<ApiResponse<Object>> handleGeneralException(GeneralException e) {
         return ApiResponse.onFailure(e.getStatus());
     }
 
