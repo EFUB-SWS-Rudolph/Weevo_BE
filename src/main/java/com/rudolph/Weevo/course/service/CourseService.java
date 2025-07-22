@@ -234,6 +234,43 @@ public class CourseService {
                 .build();
     }
 
+    // 9) 강의 성사 취소
+    @Transactional
+    public String cancelCourse(Long courseId,
+                               Long studentId,
+                               Long loginId) {
+
+        // 0. 강의 존재 확인
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
+
+        boolean isTeacher = course.getTeacher().getId().equals(loginId);
+
+        // 1. 권한 체크
+        if (!isTeacher && !loginId.equals(studentId)) {
+            // 학생이 다른 사람 enrollment 를 취소하려 함
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
+
+        // 2) (course, student) 한 행 조회
+        MemberCourse mc = memberCourseRepository
+                .findByCourseIdAndMemberId(courseId, studentId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBERCOURSE_NOT_FOUND));
+
+        // 3. 도메인 로직 실행
+        var result = mc.applyCancelRequest(isTeacher);
+
+        return switch (result) {
+            case DUPLICATE -> throw new GeneralException(ErrorStatus.COURSE_CANCEL_ALREADY_REQUESTED);
+
+            case BOTH -> {
+                memberCourseRepository.delete(mc);
+                yield "성사 취소 완료되었습니다.";
+            }
+
+            case PENDING -> "성사 취소 신청 완료되었습니다. 상대방도 성사 취소 버튼을 눌러야 최종 취소됩니다.";
+        };
+    }
 }
 
 

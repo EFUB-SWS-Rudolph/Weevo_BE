@@ -109,6 +109,16 @@ public class CourseController {
         return ApiResponse.onSuccess(SuccessStatus._OK, resp);
     }
 
+    // 9) 강의 성사 취소
+    @DeleteMapping("/cancel/{courseId}/{studentId}")
+    public ResponseEntity<ApiResponse<Map<String,String>>> cancelCourse(
+            @PathVariable Long courseId,
+            @PathVariable Long studentId,
+            @AuthenticationPrincipal CustomUserPrincipal user) {
+
+        String msg = courseService.cancelCourse(courseId, studentId, user.getMemberId());
+        return ApiResponse.onSuccess(SuccessStatus._OK, Map.of("message", msg));
+    }
 
 }
 
