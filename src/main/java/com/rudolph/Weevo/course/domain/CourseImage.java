@@ -6,6 +6,7 @@ import lombok.*;
 @Entity
 @Getter
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CourseImage {
     @Id

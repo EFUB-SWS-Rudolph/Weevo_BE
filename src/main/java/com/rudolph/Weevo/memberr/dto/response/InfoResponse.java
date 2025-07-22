@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.member.dto.response;
+package com.rudolph.Weevo.memberr.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

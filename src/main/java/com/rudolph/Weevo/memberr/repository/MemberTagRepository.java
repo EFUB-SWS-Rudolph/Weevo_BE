@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.member.repository;
+package com.rudolph.Weevo.memberr.repository;
 
 import com.rudolph.Weevo.tag.domain.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;

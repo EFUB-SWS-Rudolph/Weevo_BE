@@ -1,11 +1,11 @@
-package com.rudolph.Weevo.member.service;
+package com.rudolph.Weevo.memberr.service;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
-import com.rudolph.Weevo.member.domain.Member;
-import com.rudolph.Weevo.member.dto.request.InfoRequest;
-import com.rudolph.Weevo.member.dto.response.MemberDetailResponse;
-import com.rudolph.Weevo.member.dto.response.MemberListResponse;
-import com.rudolph.Weevo.member.repository.MemberRepository;
+import com.rudolph.Weevo.memberr.domain.Member;
+import com.rudolph.Weevo.memberr.dto.request.InfoRequest;
+import com.rudolph.Weevo.memberr.dto.response.MemberDetailResponse;
+import com.rudolph.Weevo.memberr.dto.response.MemberListResponse;
+import com.rudolph.Weevo.memberr.repository.MemberRepository;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.tag.domain.Tag;
@@ -14,13 +14,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.rudolph.Weevo.member.domain.MemberInterestTag;
-import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
-import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
-import com.rudolph.Weevo.member.dto.response.MemberInterestTagDto;
-import com.rudolph.Weevo.member.dto.response.UserProfileDto;
-import com.rudolph.Weevo.member.repository.MemberInterestTagRepository;
-import com.rudolph.Weevo.member.repository.MemberTagRepository;
+import com.rudolph.Weevo.memberr.domain.MemberInterestTag;
+import com.rudolph.Weevo.memberr.dto.request.FixProfileRequestDto;
+import com.rudolph.Weevo.memberr.dto.request.UpdateInterestTagRequestDto;
+import com.rudolph.Weevo.memberr.dto.response.MemberInterestTagDto;
+import com.rudolph.Weevo.memberr.dto.response.UserProfileDto;
+import com.rudolph.Weevo.memberr.repository.MemberInterestTagRepository;
+import com.rudolph.Weevo.memberr.repository.MemberTagRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,7 +28,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -116,7 +115,7 @@ public class MemberService {
 
     @Transactional //관심 태그 수정
     public MemberInterestTagDto updateInterestTag(CustomUserPrincipal principal, UpdateInterestTagRequestDto requestDto) {
-        Lomg memberId = principal.getMemberId();
+        Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
 
         //기존 관심 태그 제거

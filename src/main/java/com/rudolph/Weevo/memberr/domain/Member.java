@@ -1,16 +1,15 @@
-package com.rudolph.Weevo.member.domain;
+package com.rudolph.Weevo.memberr.domain;
 
 import com.rudolph.Weevo.course.domain.Course;
 import com.rudolph.Weevo.course.domain.MemberCourse;
 import com.rudolph.Weevo.global.domain.BaseEntity;
-import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
+import com.rudolph.Weevo.memberr.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.tag.domain.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,11 +45,11 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<com.rudolph.Weevo.member.domain.MemberInterestTag> interestTags = new ArrayList<>();
+    private List<com.rudolph.Weevo.memberr.domain.MemberInterestTag> interestTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<com.rudolph.Weevo.member.domain.MemberTalentTag> talentTags = new ArrayList<>();
+    private List<com.rudolph.Weevo.memberr.domain.MemberTalentTag> talentTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher")        //강의 개설 user:course = 1:N
     @Builder.Default

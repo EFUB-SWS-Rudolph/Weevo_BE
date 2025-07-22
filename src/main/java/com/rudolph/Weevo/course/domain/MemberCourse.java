@@ -1,6 +1,6 @@
 package com.rudolph.Weevo.course.domain;
 
-import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.memberr.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 

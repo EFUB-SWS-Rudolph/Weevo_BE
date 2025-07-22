@@ -1,12 +1,10 @@
-package com.rudolph.Weevo.member.repository;
+package com.rudolph.Weevo.memberr.repository;
 
-import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.memberr.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {

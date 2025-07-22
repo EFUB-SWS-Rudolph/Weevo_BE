@@ -1,6 +1,6 @@
-package com.rudolph.Weevo.member.dto.response;
+package com.rudolph.Weevo.memberr.dto.response;
 
-import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.memberr.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class UserProfileDto {
 
     public static UserProfileDto from(Member member) {
         return UserProfileDto.builder()
-                .memberId(member.getMemberId().toString())
+                .memberId(member.getId().toString())
                 .nickname(member.getNickName())
                 .studentId(member.getStudentId())
                 .location(member.getLocation())

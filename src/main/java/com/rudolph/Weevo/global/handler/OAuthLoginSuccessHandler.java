@@ -6,8 +6,8 @@ import com.rudolph.Weevo.auth.dto.info.GoogleUserInfo;
 import com.rudolph.Weevo.auth.dto.info.KakaoUserInfo;
 import com.rudolph.Weevo.auth.dto.info.OAuth2UserInfo;
 import com.rudolph.Weevo.auth.repository.RefreshTokenRepository;
-import com.rudolph.Weevo.member.domain.Member;
-import com.rudolph.Weevo.member.repository.MemberRepository;
+import com.rudolph.Weevo.memberr.domain.Member;
+import com.rudolph.Weevo.memberr.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.UUID;
 
 @Slf4j
 @Component

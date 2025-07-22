@@ -1,6 +1,6 @@
 package com.rudolph.Weevo.notification.domain;
 
-import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.memberr.domain.Member;
 import com.rudolph.Weevo.notification.domain.enums.NotiType;
 import jakarta.persistence.*;
 import lombok.*;

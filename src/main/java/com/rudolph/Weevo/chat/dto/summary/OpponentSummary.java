@@ -1,6 +1,6 @@
 package com.rudolph.Weevo.chat.dto.summary;
 
-import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.memberr.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 

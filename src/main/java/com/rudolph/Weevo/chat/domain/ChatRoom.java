@@ -2,7 +2,7 @@ package com.rudolph.Weevo.chat.domain;
 
 import com.rudolph.Weevo.chat.domain.enums.ChatCategory;
 import com.rudolph.Weevo.course.domain.Course;
-import com.rudolph.Weevo.member.domain.Member;
+import com.rudolph.Weevo.memberr.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 

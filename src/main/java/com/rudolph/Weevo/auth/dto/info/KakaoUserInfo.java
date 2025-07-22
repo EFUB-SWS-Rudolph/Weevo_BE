@@ -23,7 +23,7 @@ public class KakaoUserInfo implements OAuth2UserInfo{
     @Override
     public String getName(){
         //kakao_account라는 맵에서 추출
-        return (String) ((Map) attributes.get("properties")).get("nickname");
+        return (String) ((Map<?, ?>) attributes.get("properties")).get("nickname");
     }
 
     @Override
