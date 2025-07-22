@@ -1,7 +1,7 @@
-package com.rudolph.Weevo.memberr.repository;
+package com.rudolph.Weevo.temp.repository;
 
-import com.rudolph.Weevo.memberr.domain.Member;
-import com.rudolph.Weevo.memberr.dto.response.MemberListResponse;
+import com.rudolph.Weevo.temp.domain.Member;
+import com.rudolph.Weevo.temp.dto.response.MemberListResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;

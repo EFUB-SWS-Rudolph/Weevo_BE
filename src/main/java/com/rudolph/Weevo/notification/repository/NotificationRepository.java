@@ -1,6 +1,6 @@
 package com.rudolph.Weevo.notification.repository;
 
-import com.rudolph.Weevo.memberr.domain.Member;
+import com.rudolph.Weevo.temp.domain.Member;
 import com.rudolph.Weevo.notification.domain.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 

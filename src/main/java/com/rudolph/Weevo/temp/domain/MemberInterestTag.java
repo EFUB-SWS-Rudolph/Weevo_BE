@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.memberr.domain;
+package com.rudolph.Weevo.temp.domain;
 
 import com.rudolph.Weevo.tag.domain.Tag;
 import jakarta.persistence.*;
@@ -6,10 +6,10 @@ import lombok.*;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
-public class MemberTalentTag {
+public class MemberInterestTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

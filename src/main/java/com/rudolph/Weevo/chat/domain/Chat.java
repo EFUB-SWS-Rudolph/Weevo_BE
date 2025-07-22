@@ -1,7 +1,7 @@
 package com.rudolph.Weevo.chat.domain;
 
 import com.rudolph.Weevo.chat.domain.enums.ChatType;
-import com.rudolph.Weevo.memberr.domain.Member;
+import com.rudolph.Weevo.temp.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
