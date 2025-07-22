@@ -28,7 +28,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -117,7 +116,7 @@ public class MemberService {
 
     @Transactional //관심 태그 수정
     public MemberInterestTagDto updateInterestTag(CustomUserPrincipal principal, UpdateInterestTagRequestDto requestDto) {
-        Lomg memberId = principal.getMemberId();
+        Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
 
         //기존 관심 태그 제거
@@ -140,7 +139,7 @@ public class MemberService {
 
     @Transactional //재능 태그 수정
     public MemberTalentTagDto updateTalentTag(CustomUserPrincipal principal, UpdateTalentTagRequestDto requestDto) {
-        UUID memberId = principal.getMemberId();
+        Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
 
         //기존 재능 태그 제거

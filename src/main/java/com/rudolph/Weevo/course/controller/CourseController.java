@@ -108,14 +108,8 @@ public class CourseController {
         MyCoursesResponse resp = courseService.listMyCourses(user.getMemberId());
         return ApiResponse.onSuccess(SuccessStatus._OK, resp);
     }
-  
-  
-//     @GetMapping("/my-course")   //내 강의 조회
-//     public ResponseEntity<MyCourseListDto> getMyCourses(@AuthenticationPrincipal CustomUserPrincipal principal) {
-//         MyCourseListDto myCourseList = courseService.getMyCourseList(principal);
-//         return ResponseEntity.ok(myCourseList);
-//     }
 
-
+    // 9) 내가 찜한 강의 조회
+    @GetMapping("/bookmark")
 }
 

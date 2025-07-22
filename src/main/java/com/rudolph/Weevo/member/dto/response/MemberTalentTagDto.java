@@ -6,12 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
 public class MemberTalentTagDto {
-    private UUID memberId;
+    private Long memberId;
     private List<String> tagNames;
 
     public static MemberTalentTagDto from(Member member, List<MemberTalentTag> talentTags) {
@@ -19,6 +18,6 @@ public class MemberTalentTagDto {
                 .map(talentTag -> talentTag.getTag().getName())
                 .toList();
 
-        return new MemberTalentTagDto(member.getMemberId(), tagNames);
+        return new MemberTalentTagDto(member.getId(), tagNames);
     }
 }
