@@ -1,8 +1,11 @@
 package com.rudolph.Weevo.course.controller;
 
-import com.rudolph.Weevo.course.dto.response.*;
+import com.rudolph.Weevo.course.dto.response.CourseDetailResponse;
 import com.rudolph.Weevo.course.dto.request.CourseSearchRequest;
 import com.rudolph.Weevo.course.dto.request.CreateCourseRequest;
+import com.rudolph.Weevo.course.dto.response.CourseResponse;
+import com.rudolph.Weevo.course.dto.response.MyCoursesResponse;
+import com.rudolph.Weevo.course.dto.response.PagedCourseResponse;
 import com.rudolph.Weevo.course.service.CourseService;
 import com.rudolph.Weevo.global.common.api.ApiResponse;
 import com.rudolph.Weevo.global.common.code.SuccessStatus;
@@ -16,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import com.rudolph.Weevo.course.dto.response.MyCourseListDto;
 
 import java.util.Map;
 
@@ -114,14 +118,6 @@ public class CourseController {
 
         String msg = courseService.cancelCourse(courseId, studentId, user.getMemberId());
         return ApiResponse.onSuccess(SuccessStatus._OK, Map.of("message", msg));
-    }
-
-    // 10) 내가 찜한 강의 조회
-    @GetMapping("/bookmark")
-    public ResponseEntity<ApiResponse<MyCourseListDto>> getMyBookmarkCourses(
-            @AuthenticationPrincipal CustomUserPrincipal user) {
-        MyCourseListDto myBookmarkCourses = courseService.getMyBookmarkCourses(user.getMemberId());
-        return ApiResponse.onSuccess(SuccessStatus._OK, myBookmarkCourses);
     }
 
 }
