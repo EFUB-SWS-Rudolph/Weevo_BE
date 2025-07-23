@@ -31,7 +31,7 @@ public class UserProfileDto {
                 .isSkillDonate(member.getDonation())
                 .isExchange(member.getExchange())
                 .college(member.getCollege())
-                .profileImage(member.getProfileImage() != null ? member.getProfileImage() : "/images/general_profile.jpg")
+                .profileImage(member.getProfileImage() != null ? member.getProfileImage() : "기본프로필사진s3url링크")
                 .build();
     }
 }
