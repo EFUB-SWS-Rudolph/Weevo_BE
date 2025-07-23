@@ -38,7 +38,10 @@ public class Member extends BaseEntity {
     private String college;
     private String email;
     private String location;
+
+    @Column(nullable = true)
     private String profileImage;
+
     private Boolean coffeeChat;
     private Boolean donation;
     private Boolean exchange;
@@ -112,4 +115,7 @@ public class Member extends BaseEntity {
 
     }
 
+    public void updateProfileImage(String url) {
+        this.profileImage = url;
+    }
 }

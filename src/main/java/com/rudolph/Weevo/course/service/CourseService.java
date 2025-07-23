@@ -240,7 +240,7 @@ public class CourseService {
                 .enrolledCourses(enrolled)
                 .build();
     }
-
+        
     // 9) 강의 성사 취소
     @Transactional
     public String cancelCourse(Long courseId,
@@ -287,6 +287,15 @@ public class CourseService {
         }
 
         return response;
+    }
+
+    // 10) 내가 찜한 강의 조회
+    @Transactional(readOnly = true)
+    public MyCourseListDto getMyBookmarkCourses(Long memberId) {
+
+        //찜한 강의 목록
+        List<Course> bookmarkedCourses = bookmarkRepository.findAllBookmarkedByMemberId(memberId);
+        return MyCourseListDto.from(bookmarkedCourses);
     }
 }
 
