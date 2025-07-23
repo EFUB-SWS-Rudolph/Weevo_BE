@@ -89,7 +89,9 @@ public class ChatRoomService {
                     .content(request.getContent())
                     .build();
         chatRepository.save(chat);
-        notificationService.createNotification(NotiType.COURSE_MATCHED, sender, receiver, course.getTitle());
+
+        String courseTitle = (course != null) ? course.getTitle() : null;
+        notificationService.createNotification(NotiType.CHAT, sender, receiver, courseTitle);
     }
 
     @Transactional(readOnly = true)
