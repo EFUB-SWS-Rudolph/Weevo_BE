@@ -4,6 +4,6 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class UpdateInterestTagRequestDto {
+public class UpdateTalentTagRequestDto {
     private List<Long> tagIds;
 }

@@ -14,7 +14,7 @@ public class MyCourseListDto {
     private List<MyCourseDto> myCourses;
 
     public static MyCourseListDto from(List<Course> courseList) {
-        //수강 강의가 없을 경우 빈 배열 반환
+        //찜한 강의가 없을 경우 빈 배열 반환
         if (courseList == null || courseList.isEmpty()) {
             return new MyCourseListDto(Collections.emptyList());
         }
