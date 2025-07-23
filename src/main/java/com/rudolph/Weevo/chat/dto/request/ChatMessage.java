@@ -10,6 +10,8 @@ public class ChatMessage {
     private Long chatRoomId;
     @NotNull
     private Long senderId;
+    @NotNull
+    private Long receiverId;
     @NotBlank
     private String content;
 }

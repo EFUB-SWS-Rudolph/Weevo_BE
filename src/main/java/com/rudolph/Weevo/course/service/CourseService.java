@@ -15,6 +15,9 @@ import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.global.service.S3Service;
 import com.rudolph.Weevo.course.repository.MemberCourseRepository;
+import com.rudolph.Weevo.member.service.MemberService;
+import com.rudolph.Weevo.notification.domain.enums.NotiType;
+import com.rudolph.Weevo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +42,8 @@ public class CourseService {
     private final CourseBookmarkRepository bookmarkRepository;
     private final MemberCourseRepository memberCourseRepository;
     private final S3Service s3Service;
+    private final NotificationService notificationService;
+    private final MemberService memberService;
 
     // 1) 강의 생성
     public CourseResponse createCourse(CreateCourseRequest req, Long teacherId) {
@@ -198,8 +203,9 @@ public class CourseService {
         }
 
         // 수강자 조회
-        Member student = memberRepository.findById(studentId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        Member student = memberService.findMember(studentId);
+        //진행자 조회
+        Member teacher = memberService.findMember(teacherId);
 
         // 중복 확인
         boolean exists = course.getMemberCourses().stream()
@@ -210,6 +216,7 @@ public class CourseService {
         course.getMemberCourses().add(mc);
 
         courseRepository.save(course);
+        notificationService.createNotification(NotiType.COURSE_MATCHED, teacher, student, course.getTitle());
     }
 
     // 8) 내 강의 조회
@@ -260,7 +267,7 @@ public class CourseService {
         // 3. 도메인 로직 실행
         var result = mc.applyCancelRequest(isTeacher);
 
-        return switch (result) {
+        String response = switch (result) {
             case DUPLICATE -> throw new GeneralException(ErrorStatus.COURSE_CANCEL_ALREADY_REQUESTED);
 
             case BOTH -> {
@@ -270,6 +277,16 @@ public class CourseService {
 
             case PENDING -> "성사 취소 신청 완료되었습니다. 상대방도 성사 취소 버튼을 눌러야 최종 취소됩니다.";
         };
+
+        Member sender = memberService.findMember(loginId);
+        Member student = memberService.findMember(studentId);
+        if (result.equals(MemberCourse.CancelResult.PENDING) && isTeacher){
+            notificationService.createNotification(NotiType.COURSE_CANCELED, sender, student, course.getTitle());
+        } else {
+            notificationService.createNotification(NotiType.COURSE_CANCELED, sender, course.getTeacher(), course.getTitle());
+        }
+
+        return response;
     }
 }
 
