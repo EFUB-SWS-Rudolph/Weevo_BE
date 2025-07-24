@@ -58,11 +58,4 @@ public class GlobalExceptionHandler {
                 .status(ErrorStatus._INTERNAL_SERVER_ERROR.getReasonHttpStatus().getHttpStatus())
                 .body(ApiResponse.onFailure(ErrorStatus._INTERNAL_SERVER_ERROR).getBody());
     }
-
-    // 6) 그 외 모든 예외
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleAll(Exception e) {
-        log.error("Unhandled exception:", e);
-        return ApiResponse.onFailure(ErrorStatus._INTERNAL_SERVER_ERROR);
-    }
 }
