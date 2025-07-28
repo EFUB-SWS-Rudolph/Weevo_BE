@@ -23,8 +23,7 @@ public class TokenServiceImpl implements TokenService{
     private final JwtUtil jwtUtil;
 
     @Override
-    public TokenResponse reissueAccessToken(String authorizationHeader){
-        String refreshToken = jwtUtil.getTokenFromHeader(authorizationHeader);
+    public TokenResponse reissueAccessToken(String refreshToken){
         Long memberId = jwtUtil.getMemberIdFromToken(refreshToken);
         RefreshToken existRefreshToken = refreshTokenRepository.findByMemberId(memberId);
         String accessToken = null;

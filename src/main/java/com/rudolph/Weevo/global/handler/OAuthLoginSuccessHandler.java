@@ -8,6 +8,7 @@ import com.rudolph.Weevo.auth.dto.info.OAuth2UserInfo;
 import com.rudolph.Weevo.auth.repository.RefreshTokenRepository;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +78,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                     .build();
             memberRepository.save(member);
 
-            //토큰 발급
+            //리프레시 토큰 발급
             String refreshToken = jwtUtil.generateRefreshToken(member.getId(),REFRESH_TOKEN_EXPIRATION_TIME);
             refreshTokenRepository.save(
                     RefreshToken.builder()
@@ -85,6 +86,15 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                             .token(refreshToken)
                             .build()
             );
+
+            //쿠키 설정
+            Cookie cookie = new Cookie("refreshToken", refreshToken);
+            cookie.setHttpOnly(true);
+            //cookie.setSecure(true); //https 에서만 전송
+            cookie.setPath("/");
+            cookie.setMaxAge((int) (REFRESH_TOKEN_EXPIRATION_TIME / 1000));
+            response.addCookie(cookie);
+
             String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
 
             //추가 정보 입력 페이지로 리다이렉트
@@ -111,12 +121,20 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 .build();
         refreshTokenRepository.save(newRefreshToken);
 
+        //쿠키 설정
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        //cookie.setSecure(true); //https 에서만 전송
+        cookie.setPath("/");
+        cookie.setMaxAge((int) (REFRESH_TOKEN_EXPIRATION_TIME / 1000));
+        response.addCookie(cookie);
+
         //엑세스 토큰 발급
         String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
 
         //이름, 엑세스 토큰, 리프레쉬 토큰을 담아 리다이렉트
         String encodedName = URLEncoder.encode(name, "UTF-8");
-        String redirectUri = String.format(REDIRECT_URL, encodedName, accessToken, refreshToken);
+        String redirectUri = String.format(REDIRECT_URL, encodedName, accessToken);
         getRedirectStrategy().sendRedirect(request, response, redirectUri);
 
     }
