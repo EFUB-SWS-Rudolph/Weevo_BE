@@ -124,5 +124,15 @@ public class CourseController {
         return ApiResponse.onSuccess(SuccessStatus._OK, myBookmarkCourses);
     }
 
+    // 11) 추천 강의 목록 조회
+    @GetMapping("/recommend")
+    public ResponseEntity<ApiResponse<PagedCourseResponse>> getRecommendCourses(
+            @AuthenticationPrincipal CustomUserPrincipal user,
+            Pageable pageable) {
+
+        PagedCourseResponse resp = courseService.getRecommend(user.getMemberId(), pageable);
+        return ApiResponse.onSuccess(SuccessStatus._OK, resp);
+    }
+
 }
 
