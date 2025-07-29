@@ -6,6 +6,7 @@ import com.rudolph.Weevo.chat.domain.ChatRoom;
 import com.rudolph.Weevo.chat.domain.enums.ChatCategory;
 import com.rudolph.Weevo.chat.domain.enums.ChatType;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
+import com.rudolph.Weevo.chat.dto.response.ChatRoomCreateResponseDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomListResponseDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomStatusDto;
 import com.rudolph.Weevo.chat.dto.summary.ChatRoomSummary;
@@ -57,7 +58,7 @@ public class ChatRoomService {
         }
     }
 
-    public void createChatRoom(CustomUserPrincipal user, ChatRoomCreateRequestDto request) {
+    public ChatRoomCreateResponseDto createChatRoom(CustomUserPrincipal user, ChatRoomCreateRequestDto request) {
         Member sender = memberService.findMember(user.getMemberId());
         Member receiver = memberService.findMember(request.getOpponentId());
 
@@ -81,7 +82,6 @@ public class ChatRoomService {
                     .build();
         chatRoomRepository.save(newChatRoom);
 
-
         Chat chat = Chat.builder()
                     .chatRoom(newChatRoom)
                     .sender(sender)
@@ -92,6 +92,8 @@ public class ChatRoomService {
 
         String courseTitle = (course != null) ? course.getTitle() : null;
         notificationService.createNotification(NotiType.CHAT, sender, receiver, courseTitle);
+
+        return ChatRoomCreateResponseDto.from(newChatRoom.getId());
     }
 
     @Transactional(readOnly = true)
