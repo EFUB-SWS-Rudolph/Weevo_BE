@@ -13,6 +13,9 @@
         _BAD_REQUEST(HttpStatus.BAD_REQUEST, "400", "잘못된 요청입니다."),
         _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "인증이 필요합니다."),
         _FORBIDDEN(HttpStatus.FORBIDDEN, "403", "금지된 요청입니다."),
+        // TokenErrorResult.java 또는 ErrorStatus.java
+        _REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 없습니다."),
+
 
         // 강의
         COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 강의입니다."),

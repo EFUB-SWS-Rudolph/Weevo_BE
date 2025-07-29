@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.course.service;
 
+import com.rudolph.Weevo.course.domain.enums.CourseCategory;
 import com.rudolph.Weevo.course.dto.request.CourseSearchRequest;
 import com.rudolph.Weevo.course.dto.request.CreateCourseRequest;
 import com.rudolph.Weevo.course.dto.response.*;
@@ -297,6 +298,78 @@ public class CourseService {
         List<Course> bookmarkedCourses = bookmarkRepository.findAllBookmarkedByMemberId(memberId);
         return MyCourseListDto.from(bookmarkedCourses);
     }
+
+    // 11) 추천 강의 조회
+    @Transactional(readOnly = true)
+    public PagedCourseResponse getRecommend(Long memberId, Pageable pageable) {
+        // 1) 회원과 관심 태그 조회
+        Member member = memberService.findMember(memberId);
+        List<CourseCategory> categories = member.getInterestTags().stream()
+                .map(it -> it.getTag().getCategory())
+                .distinct()
+                .toList();
+
+        // 2) 관심 카테고리가 없으면 빈 페이지 리턴
+        if (categories.isEmpty()) {
+            return PagedCourseResponse.builder()
+                    .pageNumber(pageable.getPageNumber())
+                    .pageSize(pageable.getPageSize())
+                    .totalElements(0)
+                    .totalPages(0)
+                    .courses(Collections.emptyList())
+                    .build();
+        }
+
+        // 3) 해당 카테고리 강의 전체 조회
+        List<Course> candidates = courseRepository.findAllByCourseCategoryIn(categories);
+
+        // 4) 찜(북마크) 수 집계
+        List<Long> courseIds = candidates.stream()
+                .map(Course::getId)
+                .toList();
+        Map<Long, Long> bookmarkCountMap = bookmarkRepository.countByCourseIds(courseIds);
+
+        // 5) 썸네일 URL 맵 생성
+        Map<Long, String> thumbnailMap = candidates.stream()
+                .collect(Collectors.toMap(
+                        Course::getId,
+                        c -> c.getCourseImages().stream()
+                                .filter(CourseImage::isThumbnail)
+                                .findFirst()
+                                .map(CourseImage::getCourseImgUrl)
+                                .orElse("")
+                ));
+
+        // 6) DTO 변환 후 인기순 정렬
+        List<CourseListResponse> sorted = candidates.stream()
+                .map(c -> CourseListResponse.of(
+                        c,
+                        bookmarkCountMap.getOrDefault(c.getId(), 0L),
+                        thumbnailMap.get(c.getId())
+                ))
+                .sorted(Comparator.comparingLong(CourseListResponse::getBookmarkCount).reversed())
+                .toList();
+
+        // 7) 수동 페이징
+        int total = sorted.size();
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), total);
+        List<CourseListResponse> pageItems = start >= end
+                ? Collections.emptyList()
+                : sorted.subList(start, end);
+
+        int totalPages = (int) Math.ceil((double) total / pageable.getPageSize());
+
+        // 8) 응답 빌드
+        return PagedCourseResponse.builder()
+                .pageNumber(pageable.getPageNumber())
+                .pageSize(pageable.getPageSize())
+                .totalElements(total)
+                .totalPages(totalPages)
+                .courses(pageItems)
+                .build();
+    }
+
 }
 
 

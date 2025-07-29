@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.tag.domain;
 
+import com.rudolph.Weevo.course.domain.enums.CourseCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,10 @@ public class Tag {
     @Column(name = "tag_id")
     private Long id;
 
-    @Column(name = "tag_name")
+    @Column(name = "tag_name", nullable = false, unique = true)
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private CourseCategory category;
 }
