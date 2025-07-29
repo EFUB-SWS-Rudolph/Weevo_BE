@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class TokenServiceImpl implements TokenService{
+public class TokenServiceImpl {
 
     @Value("${jwt.access-token.expiration-time}")
     private long ACCESS_TOKEN_EXPIRATION_TIME;  //엑세스 토큰 유효시간
@@ -22,9 +22,7 @@ public class TokenServiceImpl implements TokenService{
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtil jwtUtil;
 
-    @Override
-    public TokenResponse reissueAccessToken(String authorizationHeader){
-        String refreshToken = jwtUtil.getTokenFromHeader(authorizationHeader);
+    public TokenResponse reissueAccessToken(String refreshToken){
         Long memberId = jwtUtil.getMemberIdFromToken(refreshToken);
         RefreshToken existRefreshToken = refreshTokenRepository.findByMemberId(memberId);
         String accessToken = null;
