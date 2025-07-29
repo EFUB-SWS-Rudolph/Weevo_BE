@@ -87,14 +87,6 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                             .build()
             );
 
-            //쿠키 설정
-            Cookie cookie = new Cookie("refreshToken", refreshToken);
-            cookie.setHttpOnly(true);
-            //cookie.setSecure(true); //https 에서만 전송
-            cookie.setPath("/");
-            cookie.setMaxAge((int) (REFRESH_TOKEN_EXPIRATION_TIME / 1000));
-            response.addCookie(cookie);
-
             String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
 
             //추가 정보 입력 페이지로 리다이렉트
@@ -120,14 +112,6 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 .token(refreshToken)
                 .build();
         refreshTokenRepository.save(newRefreshToken);
-
-        //쿠키 설정
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);
-        //cookie.setSecure(true); //https 에서만 전송
-        cookie.setPath("/");
-        cookie.setMaxAge((int) (REFRESH_TOKEN_EXPIRATION_TIME / 1000));
-        response.addCookie(cookie);
 
         //엑세스 토큰 발급
         String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
