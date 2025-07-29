@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 public class AuthService {
 
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public void logout(CustomUserPrincipal principal, String accessToken) {
@@ -31,6 +32,7 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public void logoutFromProvider(String provider, String accessToken) {
         try {
             if ("kakao".equals(provider)) {
@@ -48,7 +50,17 @@ public class AuthService {
                         .block();
             }
         } catch (WebClientResponseException e) {
-            log.error("카카오 로그아웃 실패: {}", e.getMessage());
+            log.error("카카오/구글 로그아웃 실패: {}", e.getMessage());
         }
     }
+
+    @Transactional
+    public void deleteMember(CustomUserPrincipal principal, String accessToken) {
+        try {
+            Member member = memberService.findMember(principal.getMemberId());
+            memberRepository.deleteById(memberId);
+        } catch(Exception e) {
+            log.error("회원탈퇴 실패: {}", e.getMessage());
+            throw new RuntimeException("회원탈퇴 중 오류 발생", e);
+        }
 }
