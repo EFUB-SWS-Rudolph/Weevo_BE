@@ -4,6 +4,7 @@ import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
 import com.rudolph.Weevo.chat.dto.response.ChatMessageResponseDto;
+import com.rudolph.Weevo.chat.dto.response.ChatRoomCreateResponseDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomListResponseDto;
 import com.rudolph.Weevo.chat.dto.response.ChatRoomStatusDto;
 import com.rudolph.Weevo.chat.service.ChatRoomService;
@@ -48,10 +49,10 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/rooms")
-    public ResponseEntity<Void> createRoom(@AuthenticationPrincipal CustomUserPrincipal user,
-                                           @Valid @RequestBody ChatRoomCreateRequestDto request) {
-        chatRoomService.createChatRoom(user, request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<ChatRoomCreateResponseDto> createRoom(@AuthenticationPrincipal CustomUserPrincipal user,
+                                                                @Valid @RequestBody ChatRoomCreateRequestDto request) {
+        ChatRoomCreateResponseDto responseDto = chatRoomService.createChatRoom(user, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     // 채팅방 목록 조회
