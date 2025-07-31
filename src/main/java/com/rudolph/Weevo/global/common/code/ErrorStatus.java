@@ -31,6 +31,7 @@
         MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 사용자입니다."),
         INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "400", "이화인 인증 코드가 일치하지 않습니다."),
         KEYWORD_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "400", "키워드는 최대 3개까지 선택 가능합니다."),
+        INVALID_DEPARTMENT(HttpStatus.BAD_REQUEST, "400", "존재하지 않는 학과입니다."),
 
         //채팅
         CHATROOM_ALREADY_EXITED(HttpStatus.BAD_REQUEST, "400", "이미 나간 채팅방에는 접근할 수 없습니다."),

@@ -4,26 +4,26 @@ import com.rudolph.Weevo.auth.service.AuthService;
 import com.rudolph.Weevo.global.common.api.ApiResponse;
 import com.rudolph.Weevo.global.common.code.SuccessStatus;
 import com.rudolph.Weevo.member.dto.request.UpdateTalentTagRequestDto;
-import com.rudolph.Weevo.member.dto.response.MemberDetailResponse;
-import com.rudolph.Weevo.member.dto.response.MemberTalentTagDto;
-import com.rudolph.Weevo.member.dto.response.UserProfileDto;
+import com.rudolph.Weevo.member.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
-import com.rudolph.Weevo.member.dto.response.MemberInterestTagDto;
 import com.rudolph.Weevo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -36,6 +36,12 @@ public class MyPageController {
     public ResponseEntity<UserProfileDto> getMyProfile(@AuthenticationPrincipal CustomUserPrincipal principal) {
         UserProfileDto userProfile = memberService.getMyProfile(principal);
         return ResponseEntity.ok(userProfile);
+    }
+
+    @GetMapping("/profile/tags")
+    public ResponseEntity<MemberTagsResponseDto> getMyTags(@AuthenticationPrincipal CustomUserPrincipal principal) {
+        MemberTagsResponseDto userProfileTag = memberService.getMyTagProfile(principal);
+        return ResponseEntity.ok(userProfileTag);
     }
 
     @PatchMapping("/profile/basic")
@@ -75,4 +81,14 @@ public class MyPageController {
 
         return ResponseEntity.ok().build();
     }
+
+//    @PostMapping("/delete")
+//    public ResponseEntity<String> deleteMember(@AuthenticationPrincipal CustomUserPrincipal principal, @RequestHeader("Authorization") String authHeader) {
+//        String accessToken = authHeader.replace("Bearer ", "");
+//        log.info("accessToken: {}", accessToken);
+//        String deleteResult = authService.deleteMember(principal, accessToken);
+//
+//        SecurityContextHolder.clearContext(); // 현재 세션에서 인증 정보 제거
+//        return ResponseEntity.ok(deleteResult);
+//    }
 }
