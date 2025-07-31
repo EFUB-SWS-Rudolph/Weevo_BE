@@ -29,8 +29,8 @@ public class MemberDetailResponse {
 
         return MemberDetailResponse.builder()
                 .nickName(member.getNickName())
-                .department(member.getDepartment())
-                .profileImage(member.getProfileImage())
+                .department(member.getDepartment().getName())
+                .profileImage(profileImage)
                 .talentTags(member.getTalentTags().stream()
                         .map(talentTag -> talentTag.getTag().getName())
                         .collect(Collectors.toList()))

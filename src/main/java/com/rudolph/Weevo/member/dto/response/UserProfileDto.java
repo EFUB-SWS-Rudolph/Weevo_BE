@@ -26,7 +26,7 @@ public class UserProfileDto {
                 .nickname(member.getNickName())
                 .studentId(member.getStudentId())
                 .location(member.getLocation())
-                .dept(member.getDepartment())
+                .dept(member.getDepartment().getName())
                 .isCoffeeChat(member.getCoffeeChat())
                 .isSkillDonate(member.getDonation())
                 .isExchange(member.getExchange())

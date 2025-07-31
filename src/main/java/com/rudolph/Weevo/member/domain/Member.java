@@ -34,7 +34,11 @@ public class Member extends BaseEntity {
     private String providerId;
 
     private String studentId;
-    private String department;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dept_id")
+    private Department department;
+
     private String college;
     private String email;
     private String location;
@@ -66,7 +70,7 @@ public class Member extends BaseEntity {
             String nickName,
             String studentId,
             String college,
-            String department,
+            Department department,
             String location,
             List<Tag> interestTagList,
             List<Tag> talentTagList
@@ -77,7 +81,7 @@ public class Member extends BaseEntity {
         this.department = department;
         this.location   = location;
 
-        // 기존 태그 초기화
+        //기존 태그 초기화
         this.interestTags.clear();
         this.talentTags.clear();
 
@@ -100,12 +104,12 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void updateProfile(FixProfileRequestDto dto) {
+    public void updateProfile(FixProfileRequestDto dto, Department department) {
         if (dto.getNickname() != null) {
             this.nickName = dto.getNickname();
         }
-        if (dto.getDept() != null) {
-            this.department = dto.getDept();
+        if (department != null) {
+            this.department = department;
         }
         if (dto.getStudentId() != null) {
             this.studentId = dto.getStudentId();
@@ -122,6 +126,7 @@ public class Member extends BaseEntity {
         if (dto.getIsSkillDonation() != null) {
             this.donation = dto.getIsSkillDonation();
         }
+
     }
 
     public void updateProfileImage(String url) {
