@@ -13,11 +13,8 @@ public class AuthController {
     private final LoginService loginService;
 
     @GetMapping("/login/oauth2/code/{provider}")
-    public ResponseEntity<LoginResponse> oauth2Callback(
-            @PathVariable String provider,
-            @RequestParam String code
-    ) {
-        return ResponseEntity.ok(loginService.login(provider, code));
+    public ResponseEntity<Void> oauth2Callback() {
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/auth/login/{provider}")
