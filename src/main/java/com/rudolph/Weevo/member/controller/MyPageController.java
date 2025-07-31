@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,11 +77,12 @@ public class MyPageController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteMember(@AuthenticationPrincipal CustomUserPrincipal principal, @RequestHeader("Authorization") String authHeader) {
-        String accessToken = authHeader.replace("Bearer ", "");
-        authService.deleteMember(principal, accessToken);
-
-        SecurityContextHolder.clearContext(); // 현재 세션에서 인증 정보 제거
-        return ResponseEntity.noContent().build();
+//    @DeleteMapping("/delete")
+//    public ResponseEntity<?> deleteMember(@AuthenticationPrincipal CustomUserPrincipal principal, @RequestHeader("Authorization") String authHeader) {
+//        String accessToken = authHeader.replace("Bearer ", "");
+//        authService.deleteMember(principal, accessToken);
+//
+//        SecurityContextHolder.clearContext(); // 현재 세션에서 인증 정보 제거
+//        return ResponseEntity.noContent().build();
+//    }
 }

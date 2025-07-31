@@ -2,15 +2,15 @@ package com.rudolph.Weevo.member.service;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.global.service.S3Service;
+import com.rudolph.Weevo.member.domain.Department;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.domain.MemberTalentTag;
 import com.rudolph.Weevo.member.dto.request.InfoRequest;
 import com.rudolph.Weevo.member.dto.request.UpdateTalentTagRequestDto;
 import com.rudolph.Weevo.member.dto.response.*;
-import com.rudolph.Weevo.member.repository.MemberRepository;
+import com.rudolph.Weevo.member.repository.*;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
-import com.rudolph.Weevo.member.repository.MemberTalentTagRepository;
 import com.rudolph.Weevo.tag.domain.Tag;
 import com.rudolph.Weevo.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rudolph.Weevo.member.domain.MemberInterestTag;
 import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
-import com.rudolph.Weevo.member.repository.MemberInterestTagRepository;
-import com.rudolph.Weevo.member.repository.MemberTagRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +39,7 @@ public class MemberService {
     private final MemberTagRepository memberTagRepository;
     private final MemberTalentTagRepository memberTalentTagRepository;
     private final S3Service s3Service;
+    private final DepartmentRepository departmentRepository;
 
     // 1) 추가 회원 정보 가입
     @Transactional
@@ -58,11 +57,13 @@ public class MemberService {
         List<Tag> interestTags = tagService.findByNames(request.getInterestKeywords());
         List<Tag> talentTags = tagService.findByNames(request.getTalentKeywords());
 
+        Department department = departmentRepository.findByName(request.getDepartment())
+                        .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_DEPARTMENT));
         member.additionalInfo(
                 request.getNickName(),
                 request.getStudentId(),
                 request.getCollege(),
-                request.getDepartment(),
+                department,
                 request.getLocation(),
                 interestTags,
                 talentTags
