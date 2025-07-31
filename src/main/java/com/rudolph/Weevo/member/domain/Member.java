@@ -94,12 +94,12 @@ public class Member extends BaseEntity {
         );
     }
 
-    public void updateProfile(FixProfileRequestDto dto) {
+    public void updateProfile(FixProfileRequestDto dto, Department department) {
         if (dto.getNickname() != null) {
             this.nickName = dto.getNickname();
         }
-        if (dto.getDept() != null) {
-            this.department = dto.getDept();
+        if (department != null) {
+            this.department = department;
         }
         if (dto.getStudentId() != null) {
             this.studentId = dto.getStudentId();

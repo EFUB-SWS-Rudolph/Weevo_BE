@@ -57,8 +57,7 @@ public class MemberService {
         List<Tag> interestTags = tagService.findByNames(request.getInterestKeywords());
         List<Tag> talentTags = tagService.findByNames(request.getTalentKeywords());
 
-        Department department = departmentRepository.findByName(request.getDepartment())
-                        .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_DEPARTMENT));
+        Department department = findDepartment(request.getDepartment());
         member.additionalInfo(
                 request.getNickName(),
                 request.getStudentId(),
@@ -110,11 +109,40 @@ public class MemberService {
         return UserProfileDto.from(member);
     }
 
+    @Transactional(readOnly = true) //프로필 태그 조회
+    public MemberTagsResponseDto getMyTagProfile(CustomUserPrincipal principal) {
+        Long memberId = principal.getMemberId();
+        //태그 가져오기
+        MemberInterestTagDto interestTags = getInterestTags(memberId);
+        MemberTalentTagDto talentTags = getTalentTags(memberId);
+
+        MemberTagsResponseDto responseDto = new MemberTagsResponseDto(interestTags, talentTags);
+        return responseDto;
+    }
+
+    private MemberInterestTagDto getInterestTags(Long memberId) {
+        Member member = findMember(memberId);
+        List<MemberInterestTag> interestTags = memberInterestTagRepository.findAllByMember(member);
+        return MemberInterestTagDto.from(member, interestTags);
+    }
+
+    private MemberTalentTagDto getTalentTags(Long memberId) {
+        Member member = findMember(memberId);
+        List<MemberTalentTag> talentTags = memberTalentTagRepository.findAllByMember(member);
+        return MemberTalentTagDto.from(member, talentTags);
+    }
+
     @Transactional  //프로필 수정 (관심 태그, 사진 제외)
     public UserProfileDto fixMyProfile(CustomUserPrincipal principal, FixProfileRequestDto requestDto) {
         Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
-        member.updateProfile(requestDto);
+        Department department;
+        if (requestDto.getDept() == null) {
+            department = member.getDepartment();
+        }else {
+            department = findDepartment(requestDto.getDept());
+        }
+        member.updateProfile(requestDto, department);
         return UserProfileDto.from(member);
     }
 
@@ -172,5 +200,11 @@ public class MemberService {
         String imageUrl = s3Service.uploadFile(imageFile, "/profile" + memberId);
         member.updateProfileImage(imageUrl);
         return imageUrl;
+    }
+
+    @Transactional(readOnly = true)
+    public Department findDepartment(String deptName) {
+        Department dept = departmentRepository.findByName(deptName).orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_DEPARTMENT));
+        return dept;
     }
 }
