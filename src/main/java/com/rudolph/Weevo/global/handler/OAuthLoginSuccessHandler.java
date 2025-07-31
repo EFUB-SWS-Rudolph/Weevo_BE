@@ -1,5 +1,6 @@
 package com.rudolph.Weevo.global.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rudolph.Weevo.global.util.JwtUtil;
 import com.rudolph.Weevo.auth.domain.RefreshToken;
 import com.rudolph.Weevo.auth.dto.info.GoogleUserInfo;
@@ -8,6 +9,7 @@ import com.rudolph.Weevo.auth.dto.info.OAuth2UserInfo;
 import com.rudolph.Weevo.auth.repository.RefreshTokenRepository;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -64,11 +68,12 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         Member existMember = memberRepository.findByProviderId(providerId);
         Member member;
+        boolean isNew = false;
 
         if(existMember == null){
             // 신규 유저인 경우 -> 추가 정보 화면으로 전환 필요
             log.info("신규 유저입니다.");
-
+            isNew = true;
             member = Member.builder()
                     .nickName(name)
                     .provider(provider)
@@ -76,21 +81,6 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                     .email(email)
                     .build();
             memberRepository.save(member);
-
-            //토큰 발급
-            String refreshToken = jwtUtil.generateRefreshToken(member.getId(),REFRESH_TOKEN_EXPIRATION_TIME);
-            refreshTokenRepository.save(
-                    RefreshToken.builder()
-                    .memberId(member.getId())
-                            .token(refreshToken)
-                            .build()
-            );
-            String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
-
-            //추가 정보 입력 페이지로 리다이렉트
-            String redirectUri = "http://localhost:5173/signup/additional?accessToken=" + accessToken;
-            getRedirectStrategy().sendRedirect(request, response, redirectUri);
-            return; // 기존 유저 코드가 실행되지 않게 함
         } else {
             // 기존 유저인경우 -> 리프레쉬 토큰 삭제
             log.info("기존 유저입니다.");
@@ -114,10 +104,15 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         //엑세스 토큰 발급
         String accessToken = jwtUtil.generateAccessToken(member.getId(), ACCESS_TOKEN_EXPIRATION_TIME);
 
-        //이름, 엑세스 토큰, 리프레쉬 토큰을 담아 리다이렉트
-        String encodedName = URLEncoder.encode(name, "UTF-8");
-        String redirectUri = String.format(REDIRECT_URL, encodedName, accessToken, refreshToken);
-        getRedirectStrategy().sendRedirect(request, response, redirectUri);
+        // JSON 응답 작성
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("accessToken", accessToken);
+        responseBody.put("refreshToken", refreshToken);
+        responseBody.put("isNew", isNew);
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json;charset=UTF-8");
+        new ObjectMapper().writeValue(response.getWriter(), responseBody);
 
     }
 }
