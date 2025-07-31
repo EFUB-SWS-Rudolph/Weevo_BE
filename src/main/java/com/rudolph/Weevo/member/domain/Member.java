@@ -27,10 +27,10 @@ public class Member extends BaseEntity {
     @Column(name = "nickname", nullable = false, length = 50)
     private String nickName;
 
-    @Column(name = "provider", nullable = false, length = 10) // kakao, google
+    @Column(name = "provider", nullable = false, length = 10)
     private String provider;
 
-    @Column(name = "provider_id", nullable = false, length = 50) //kakao에서 이메일을 받을 수 없으므로 providerId를 통해 유저 구분
+    @Column(name = "provider_id", nullable = false, length = 50)
     private String providerId;
 
     private String studentId;
@@ -52,46 +52,56 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<com.rudolph.Weevo.member.domain.MemberInterestTag> interestTags = new ArrayList<>();
+    private List<MemberInterestTag> interestTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<com.rudolph.Weevo.member.domain.MemberTalentTag> talentTags = new ArrayList<>();
+    private List<MemberTalentTag> talentTags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacher")        //강의 개설 user:course = 1:N
+    @OneToMany(mappedBy = "teacher")
     @Builder.Default
     private List<Course> courses = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    @Builder.Default                                        //유저:강의 = N:M (수강)
+    @Builder.Default
     private List<MemberCourse> memberCourses = new ArrayList<>();
 
-    public void additionalInfo(String nickName, String studentId, String college, Department department, String email,
-                               List<Tag> interestTagList, List<Tag> talentTagList){
-        this.nickName = nickName;
-        this.studentId = studentId;
-        this.college = college;
+    public void additionalInfo(
+            String nickName,
+            String studentId,
+            String college,
+            Department department,
+            String location,
+            List<Tag> interestTagList,
+            List<Tag> talentTagList
+    ) {
+        this.nickName   = nickName;
+        this.studentId  = studentId;
+        this.college    = college;
         this.department = department;
-        this.location = location;
-        this.email = email;
+        this.location   = location;
 
         //기존 태그 초기화
         this.interestTags.clear();
         this.talentTags.clear();
 
         // 새로운 중간 엔티티 생성 및 할당
-        interestTagList.forEach(tag ->
-                this.interestTags.add(MemberInterestTag.builder()
-                        .member(this)
-                        .tag(tag)
-                        .build())
-        );
-        talentTagList.forEach(tag ->
-                this.talentTags.add(MemberTalentTag.builder()
-                        .member(this)
-                        .tag(tag)
-                        .build())
-        );
+        for (Tag tag : interestTagList) {
+            this.interestTags.add(
+                    MemberInterestTag.builder()
+                            .member(this)
+                            .tag(tag)
+                            .build()
+            );
+        }
+        for (Tag tag : talentTagList) {
+            this.talentTags.add(
+                    MemberTalentTag.builder()
+                            .member(this)
+                            .tag(tag)
+                            .build()
+            );
+        }
     }
 
     public void updateProfile(FixProfileRequestDto dto, Department department) {
