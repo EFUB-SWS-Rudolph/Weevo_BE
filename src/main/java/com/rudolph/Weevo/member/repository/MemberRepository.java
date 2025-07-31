@@ -9,8 +9,7 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
-    Member findByProviderId(String providerId);
-
+    Optional<Member> findByProviderId(String providerId);
     //회원 ID로 조회
     Optional<Member> findById(Long id);
 

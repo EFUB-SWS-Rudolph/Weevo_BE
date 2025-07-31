@@ -1,15 +1,12 @@
 package com.rudolph.Weevo.global.config;
 
-import com.rudolph.Weevo.global.handler.OAuthLoginFailureHandler;
-import com.rudolph.Weevo.global.handler.OAuthLoginSuccessHandler;
 import com.rudolph.Weevo.global.util.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -17,17 +14,35 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
 
-
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final OAuthLoginSuccessHandler oAuthLoginSuccessHandler;
-    private final OAuthLoginFailureHandler oAuthLoginFailureHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    //CORS 설정
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        // OAuth 콜백도, POST 로그인도 모두 공개
+                        .requestMatchers(
+                                "/login/oauth2/code/**",
+                                "/auth/login/**",
+                                "/v1/reissue/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+
+    @Bean
     CorsConfigurationSource corsConfigurationSource(){
         return request -> {
             CorsConfiguration config = new CorsConfiguration();
@@ -38,21 +53,4 @@ public class SecurityConfig {
             return config;
         };
     }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity.
-                httpBasic(HttpBasicConfigurer::disable)
-                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource())) //cors 설정 추가
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/**").permitAll())
-                .oauth2Login(oauth -> //oauth 로그인 기능에 대한 여러 설정의 진입점
-                        oauth
-                                .successHandler(oAuthLoginSuccessHandler)
-                                .failureHandler(oAuthLoginFailureHandler)
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return httpSecurity.build();
-    }
-
 }
