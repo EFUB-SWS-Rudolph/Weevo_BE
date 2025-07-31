@@ -20,6 +20,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class LoginService {
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakaoClientId;
-    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret:}")
     private String kakaoClientSecret;
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String kakaoRedirectUri;
@@ -60,40 +61,63 @@ public class LoginService {
     private long refreshTokenExp;
 
     public LoginResponse login(String provider, String code) {
-        // 1) 인가 코드 → OAuth 제공자 토큰 교환
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("grant_type", "authorization_code");
+
+        MultiValueMap<String,String> form = new LinkedMultiValueMap<>();
+        form.add("grant_type","authorization_code");
         form.add("client_id", getClientId(provider).trim());
-        form.add("client_secret", getClientSecret(provider).trim());
+        String secret = getClientSecret(provider).trim();
+
+        if ("google".equals(provider) || !secret.isEmpty()) {
+            form.add("client_secret", secret);
+        }
         form.add("redirect_uri", getRedirectUri(provider).trim());
         form.add("code", code);
 
-        TokenResponse providerToken = webClient.post()
-                .uri(getTokenUri(provider))
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(form))
-                .retrieve()
-                .bodyToMono(TokenResponse.class)
-                .blockOptional()
-                .orElseThrow(() -> new IllegalStateException("OAuth provider returned no token"));
+        TokenResponse providerToken;
+        try {
+            providerToken = webClient.post()
+                    .uri(getTokenUri(provider))
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(BodyInserters.fromFormData(form))
+                    .retrieve()
+                    .bodyToMono(TokenResponse.class)
+                    .block();
+            if (providerToken == null) {
+                throw new IllegalStateException("Empty token response");
+            }
+        } catch (WebClientResponseException e) {
+            int status = e.getStatusCode().value();
+            String body  = e.getResponseBodyAsString();
+            throw e;
+        }
 
-        // 2) 프로필 조회
-        String rawAccessToken = providerToken.getAccessToken();
-        Map<String, Object> profile = webClient.get()
-                .uri(getProfileUri(provider))
-                .headers(h -> h.setBearerAuth(rawAccessToken))
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
-                .blockOptional()
-                .orElseThrow(() -> new IllegalStateException("OAuth provider returned no user profile"));
+        // 3) 프로필 조회
+        String rawAccess = providerToken.getAccessToken();
+        Map<String,Object> profile;
+        try {
+            profile = webClient.get()
+                    .uri(getProfileUri(provider))
+                    .headers(h -> h.setBearerAuth(rawAccess))
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
+                    .block();
+            if (profile == null) {
+                throw new IllegalStateException("Empty profile response");
+            }
+        } catch (WebClientResponseException e) {
+            int status = e.getStatusCode().value();
+            String body  = e.getResponseBodyAsString();
+            throw e;
+        }
 
-        OAuth2UserInfo userInfo = switch (provider) {
+        // 4) 사용자 정보 추출
+        OAuth2UserInfo userInfo = switch(provider) {
             case "kakao"  -> new KakaoUserInfo(profile);
             case "google" -> new GoogleUserInfo(profile);
-            default       -> throw new IllegalArgumentException("지원되지 않는 provider: " + provider);
+            default       -> throw new IllegalArgumentException("Unsupported provider: "+provider);
         };
 
-        // 3) 회원 조회/가입
+        // 5) 회원 조회 또는 신규 가입
         Optional<Member> opt = memberRepository.findByProviderId(userInfo.getProviderId());
         Member member = opt.orElseGet(() -> {
             Member m = Member.builder()
@@ -106,7 +130,7 @@ public class LoginService {
         });
         boolean isNew = opt.isEmpty();
 
-        // 4) 기존 토큰 삭제 및 JWT 발급
+        // 6) 기존 리프레시 토큰 삭제 & 새 JWT 발급
         refreshTokenRepository.deleteByMemberId(member.getId());
         String newRefresh = jwtUtil.generateRefreshToken(member.getId(), refreshTokenExp);
         refreshTokenRepository.save(
@@ -117,6 +141,7 @@ public class LoginService {
         );
         String newAccess = jwtUtil.generateAccessToken(member.getId(), accessTokenExp);
 
+        // 7) LoginResponse 반환
         return LoginResponse.builder()
                 .isNew(isNew)
                 .accessToken(newAccess)
@@ -124,7 +149,7 @@ public class LoginService {
                 .build();
     }
 
-    private String getClientId(String p)     { return "kakao".equals(p) ? kakaoClientId  : googleClientId; }
+    private String getClientId(String p)     { return "kakao".equals(p) ? kakaoClientId : googleClientId; }
     private String getClientSecret(String p) { return "kakao".equals(p) ? kakaoClientSecret : googleClientSecret; }
     private String getRedirectUri(String p)  { return "kakao".equals(p) ? kakaoRedirectUri : googleRedirectUri; }
     private String getTokenUri(String p)     { return "kakao".equals(p) ? kakaoTokenUri    : GOOGLE_TOKEN_URI; }
