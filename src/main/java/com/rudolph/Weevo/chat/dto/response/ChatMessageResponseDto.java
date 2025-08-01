@@ -5,6 +5,7 @@ import com.rudolph.Weevo.chat.dto.summary.CourseSummary;
 import com.rudolph.Weevo.chat.dto.summary.MessageSummary;
 import com.rudolph.Weevo.chat.dto.summary.OpponentSummary;
 import com.rudolph.Weevo.course.domain.Course;
+import com.rudolph.Weevo.course.domain.CourseImage;
 import com.rudolph.Weevo.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,10 +26,17 @@ public class ChatMessageResponseDto {
                                               Member opponent,
                                               Course course,
                                               List<Chat> chatMessages) {
+
+        String thumbnailImageUrl = course.getCourseImages().stream()
+                .filter(CourseImage::isThumbnail)
+                .map(CourseImage::getCourseImgUrl)
+                .findFirst()
+                .orElse(null);
+
         return ChatMessageResponseDto.builder()
                 .chatRoomId(chatRoomId)
                 .opponent(OpponentSummary.from(opponent))
-                .course(CourseSummary.from(course))
+                .course(CourseSummary.from(course, thumbnailImageUrl))
                 .messages(chatMessages.stream().map(MessageSummary::from).collect(Collectors.toList()))
                 .build();
     }

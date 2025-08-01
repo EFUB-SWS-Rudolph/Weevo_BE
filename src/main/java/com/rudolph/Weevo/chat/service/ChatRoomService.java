@@ -6,8 +6,7 @@ import com.rudolph.Weevo.chat.domain.ChatRoom;
 import com.rudolph.Weevo.chat.domain.enums.ChatCategory;
 import com.rudolph.Weevo.chat.domain.enums.ChatType;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
-import com.rudolph.Weevo.chat.dto.response.ChatRoomListResponseDto;
-import com.rudolph.Weevo.chat.dto.response.ChatRoomStatusDto;
+import com.rudolph.Weevo.chat.dto.response.*;
 import com.rudolph.Weevo.chat.dto.summary.ChatRoomSummary;
 import com.rudolph.Weevo.chat.repository.ChatRepository;
 import com.rudolph.Weevo.chat.repository.ChatRoomRepository;
@@ -42,22 +41,24 @@ public class ChatRoomService {
         Member sender = memberService.findMember(user.getMemberId());
         Member receiver = memberService.findMember(opponentId);
 
+        Course course = null;
         Optional<ChatRoom> existingRoom;
+
         if (courseId != null) {
-            Course course = courseService.findCourse(courseId);
+            course = courseService.findCourse(courseId);
             existingRoom = chatRoomRepository.findCourseChatRoom(sender.getId(), receiver.getId(), course.getId());
         } else {
             existingRoom = chatRoomRepository.findCoffeeChatRoom(sender.getId(), receiver.getId());
         }
 
         if (existingRoom.isPresent()) {
-            return ChatRoomStatusDto.from(existingRoom.get().getId(), true);
+            return ChatRoomExistsDto.from(existingRoom.get().getId(), true);
         } else {
-            return ChatRoomStatusDto.from(null, false);
+            return ChatRoomNotExistsDto.from(null, false, receiver, course);
         }
     }
 
-    public void createChatRoom(CustomUserPrincipal user, ChatRoomCreateRequestDto request) {
+    public ChatRoomCreateResponseDto createChatRoom(CustomUserPrincipal user, ChatRoomCreateRequestDto request) {
         Member sender = memberService.findMember(user.getMemberId());
         Member receiver = memberService.findMember(request.getOpponentId());
 
@@ -81,7 +82,6 @@ public class ChatRoomService {
                     .build();
         chatRoomRepository.save(newChatRoom);
 
-
         Chat chat = Chat.builder()
                     .chatRoom(newChatRoom)
                     .sender(sender)
@@ -92,6 +92,8 @@ public class ChatRoomService {
 
         String courseTitle = (course != null) ? course.getTitle() : null;
         notificationService.createNotification(NotiType.CHAT, sender, receiver, courseTitle);
+
+        return ChatRoomCreateResponseDto.from(newChatRoom.getId());
     }
 
     @Transactional(readOnly = true)
