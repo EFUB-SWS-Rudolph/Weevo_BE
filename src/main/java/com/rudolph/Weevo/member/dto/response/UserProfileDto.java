@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserProfileDto {
+
     private String memberId;
     private String nickname;
     private String studentId;
@@ -21,17 +22,21 @@ public class UserProfileDto {
     private String profileImage;
 
     public static UserProfileDto from(Member member) {
+
         return UserProfileDto.builder()
-                .memberId(member.getId().toString())
-                .nickname(member.getNickName())
-                .studentId(member.getStudentId())
-                .location(member.getLocation())
-                .dept(member.getDepartment().getName())
-                .isCoffeeChat(member.getCoffeeChat())
-                .isSkillDonate(member.getDonation())
-                .isExchange(member.getExchange())
-                .college(member.getCollege())
-                .profileImage(member.getProfileImage() != null ? member.getProfileImage() : "/images/general_profile.jpg")
+                .memberId(member.getId() != null ? member.getId().toString() : "")
+                .nickname(member.getNickName() != null ? member.getNickName() : "")
+                .studentId(member.getStudentId() != null ? member.getStudentId() : "")
+                .location(member.getLocation() != null ? member.getLocation() : "")
+                .dept(member.getDepartment() != null && member.getDepartment().getName() != null
+                        ? member.getDepartment().getName() : "")
+                .isCoffeeChat(Boolean.TRUE.equals(member.getCoffeeChat()))
+                .isExchange(Boolean.TRUE.equals(member.getExchange()))
+                .isSkillDonate(Boolean.TRUE.equals(member.getDonation()))
+                .college(member.getCollege() != null ? member.getCollege() : "")
+                .profileImage(member.getProfileImage() != null
+                        ? member.getProfileImage()
+                        : "/images/general_profile.jpg")
                 .build();
     }
 }
