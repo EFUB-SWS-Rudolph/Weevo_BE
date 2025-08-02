@@ -30,7 +30,7 @@ public class Member extends BaseEntity {
     @Column(name = "provider", nullable = false, length = 10)
     private String provider;
 
-    @Column(name = "provider_id", nullable = false, length = 50)
+    @Column(name = "provider_id", nullable = false, length = 50, unique = true)
     private String providerId;
 
     private String studentId;

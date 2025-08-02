@@ -17,6 +17,7 @@ public class MemberDetailResponse {
     private String profileImage;
     private String studentId;
     private List<String> talentTags;
+    private List<String> interestTags;
     private boolean coffeeChat;
     private boolean donation;
     private boolean exchange;
@@ -28,17 +29,19 @@ public class MemberDetailResponse {
             profileImage = DEFAULT_PROFILE_IMAGE_URL;
         }  //테스트를 위해 넣은 코드라 나중에 빼주세요
 
-        return MemberDetailResponse.builder()
-                .nickName(member.getNickName())
-                .department(member.getDepartment().getName())
-                .profileImage(profileImage)
-                .studentId(member.getStudentId())
-                .talentTags(member.getTalentTags().stream()
-                        .map(talentTag -> talentTag.getTag().getName())
-                        .collect(Collectors.toList()))
-                .coffeeChat(Boolean.TRUE.equals(member.getCoffeeChat()))
-                .donation(Boolean.TRUE.equals(member.getDonation()))
-                .exchange(Boolean.TRUE.equals(member.getExchange()))
-                .build();
+            return MemberDetailResponse.builder()
+                    .nickName(member.getNickName())
+                    .department(member.getDepartment().getName())
+                    .profileImage(profileImage)
+                    .studentId(member.getStudentId())
+                    .talentTags(member.getTalentTags().stream()
+                            .map(talentTag -> talentTag.getTag().getName())
+                            .collect(Collectors.toList()))
+                    .interestTags(member.getInterestTags().stream().map(interestTag -> interestTag.getTag().getName())
+                            .collect(Collectors.toList()))
+                    .coffeeChat(Boolean.TRUE.equals(member.getCoffeeChat()))
+                    .donation(Boolean.TRUE.equals(member.getDonation()))
+                    .exchange(Boolean.TRUE.equals(member.getExchange()))
+                    .build();
     }
 }
