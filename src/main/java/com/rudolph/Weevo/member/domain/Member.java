@@ -35,9 +35,10 @@ public class Member extends BaseEntity {
 
     private String studentId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dept_id")
     private Department department;
+
 
     private String college;
     private String email;
