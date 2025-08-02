@@ -3,6 +3,9 @@ package com.rudolph.Weevo.member.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,5 +20,8 @@ public class Department {
 
     @Column(name = "dept_name")
     private String name;
+
+    @OneToMany(mappedBy = "department")
+    private List<Member> members = new ArrayList<>();
 
 }

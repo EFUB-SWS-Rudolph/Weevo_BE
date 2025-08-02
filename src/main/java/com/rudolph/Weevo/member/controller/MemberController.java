@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
-@Tag(name = "Member", description = "회원 관련 api")
+@Tag(name = "   Member", description = "회원 관련 api")
 public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
