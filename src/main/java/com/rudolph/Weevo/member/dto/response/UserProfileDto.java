@@ -28,8 +28,7 @@ public class UserProfileDto {
                 .nickname(member.getNickName() != null ? member.getNickName() : "")
                 .studentId(member.getStudentId() != null ? member.getStudentId() : "")
                 .location(member.getLocation() != null ? member.getLocation() : "")
-                .dept(member.getDepartment() != null && member.getDepartment().getName() != null
-                        ? member.getDepartment().getName() : "")
+                .dept(member.getDepartment() != null ? member.getDepartment() : "")
                 .isCoffeeChat(Boolean.TRUE.equals(member.getCoffeeChat()))
                 .isExchange(Boolean.TRUE.equals(member.getExchange()))
                 .isSkillDonate(Boolean.TRUE.equals(member.getDonation()))
