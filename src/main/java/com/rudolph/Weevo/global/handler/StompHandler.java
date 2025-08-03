@@ -19,11 +19,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class WebSocketAuthInterceptor implements ChannelInterceptor {
+public class StompHandler implements ChannelInterceptor {
 
     private final JwtUtil jwtUtil;
 
