@@ -16,9 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +34,12 @@ public class ChatService {
     private final NotificationService notificationService;
     private final ChatRepository chatRepository;
 
-    public void saveMessage(ChatMessage message) {
+    public Chat saveMessage(ChatMessage message, CustomUserPrincipal user) {
+        Member sender = memberService.findMember(user.getMemberId());
+        Member receiver = memberService.findMember(message.getReceiverId());
         ChatRoom chatRoom = chatRoomService.findChatRoom(message.getChatRoomId());
 
-        Member sender = memberService.findMember(message.getSenderId());
-        Member receiver = memberService.findMember(message.getReceiverId());
+        notificationService.createNotification(NotiType.CHAT, sender, receiver, null);
 
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)
@@ -45,8 +48,7 @@ public class ChatService {
                 .content(message.getContent())
                 .isRead(false)
                 .build();
-        chatRepository.save(chat);
-        notificationService.createNotification(NotiType.CHAT, sender, receiver, null);
+        return chatRepository.save(chat);
     }
 
     // 채팅방 내 메세지 읽어오기
