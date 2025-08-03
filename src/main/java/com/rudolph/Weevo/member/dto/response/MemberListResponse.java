@@ -36,7 +36,7 @@ public class MemberListResponse {
         return MemberListResponse.builder()
                 .memberId(member.getId())
                 .nickName(member.getNickName())
-                .department(member.getDepartment().getName())
+                .department(member.getDepartment())
                 .college(member.getCollege())
                 .profileImage(member.getProfileImage())
                 .studentId(member.getStudentId())
