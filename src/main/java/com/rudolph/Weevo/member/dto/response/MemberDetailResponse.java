@@ -16,6 +16,7 @@ public class MemberDetailResponse {
     private String department;
     private String profileImage;
     private String studentId;
+    private String location;
     private List<String> talentTags;
     private List<String> interestTags;
     private boolean coffeeChat;
@@ -34,6 +35,7 @@ public class MemberDetailResponse {
                     .department(member.getDepartment())
                     .profileImage(profileImage)
                     .studentId(member.getStudentId())
+                    .location(member.getLocation())
                     .talentTags(member.getTalentTags().stream()
                             .map(talentTag -> talentTag.getTag().getName())
                             .collect(Collectors.toList()))
