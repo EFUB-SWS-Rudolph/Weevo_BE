@@ -34,10 +34,7 @@ public class Member extends BaseEntity {
     private String providerId;
 
     private String studentId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dept_id")
-    private Department department;
+    private String department;
 
 
     private String college;
@@ -71,7 +68,7 @@ public class Member extends BaseEntity {
             String nickName,
             String studentId,
             String college,
-            Department department,
+            String department,
             String location,
             List<Tag> interestTagList,
             List<Tag> talentTagList
@@ -105,12 +102,12 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void updateProfile(FixProfileRequestDto dto, Department department) {
+    public void updateProfile(FixProfileRequestDto dto) {
         if (dto.getNickname() != null) {
             this.nickName = dto.getNickname();
         }
         if (department != null) {
-            this.department = department;
+            this.department = dto.getDept();
         }
         if (dto.getStudentId() != null) {
             this.studentId = dto.getStudentId();

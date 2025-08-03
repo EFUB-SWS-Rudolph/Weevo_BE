@@ -2,7 +2,6 @@ package com.rudolph.Weevo.member.service;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
 import com.rudolph.Weevo.global.service.S3Service;
-import com.rudolph.Weevo.member.domain.Department;
 import com.rudolph.Weevo.member.domain.Member;
 import com.rudolph.Weevo.member.domain.MemberTalentTag;
 import com.rudolph.Weevo.member.dto.request.InfoRequest;
@@ -12,6 +11,7 @@ import com.rudolph.Weevo.member.repository.*;
 import com.rudolph.Weevo.global.common.code.ErrorStatus;
 import com.rudolph.Weevo.global.exception.GeneralException;
 import com.rudolph.Weevo.tag.domain.Tag;
+import com.rudolph.Weevo.tag.repository.TagRepository;
 import com.rudolph.Weevo.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -21,10 +21,7 @@ import com.rudolph.Weevo.member.domain.MemberInterestTag;
 import com.rudolph.Weevo.member.dto.request.FixProfileRequestDto;
 import com.rudolph.Weevo.member.dto.request.UpdateInterestTagRequestDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +36,7 @@ public class MemberService {
     private final MemberTagRepository memberTagRepository;
     private final MemberTalentTagRepository memberTalentTagRepository;
     private final S3Service s3Service;
-    private final DepartmentRepository departmentRepository;
+    private final TagRepository tagRepository;
 
     // 1) 추가 회원 정보 가입
     @Transactional
@@ -57,12 +54,11 @@ public class MemberService {
         List<Tag> interestTags = tagService.findByNames(request.getInterestKeywords());
         List<Tag> talentTags = tagService.findByNames(request.getTalentKeywords());
 
-        Department department = findDepartment(request.getDepartment());
         member.additionalInfo(
                 request.getNickName(),
                 request.getStudentId(),
                 request.getCollege(),
-                department,
+                request.getDepartment(),
                 request.getLocation(),
                 interestTags,
                 talentTags
@@ -136,13 +132,7 @@ public class MemberService {
     public UserProfileDto fixMyProfile(CustomUserPrincipal principal, FixProfileRequestDto requestDto) {
         Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
-        Department department;
-        if (requestDto.getDept() == null) {
-            department = member.getDepartment();
-        }else {
-            department = findDepartment(requestDto.getDept());
-        }
-        member.updateProfile(requestDto, department);
+        member.updateProfile(requestDto);
         return UserProfileDto.from(member);
     }
 
@@ -156,8 +146,8 @@ public class MemberService {
 
         //새로 설정된 태그 추가
         List<MemberInterestTag> newInterestTags = new ArrayList<>();
-        for (Long tagId: requestDto.getTagIds()) {
-            Tag tag = memberTagRepository.findById(tagId)
+        for (String tagName: requestDto.getTagNames()) {
+            Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
             newInterestTags.add(
                     MemberInterestTag.builder()
@@ -179,8 +169,8 @@ public class MemberService {
 
         //새로 설정된 태그 추가
         List<MemberTalentTag> newTalentTags = new ArrayList<>();
-        for (Long tagId: requestDto.getTagIds()) {
-            Tag tag = memberTagRepository.findById(tagId)
+        for (String tagName: requestDto.getTagNames()) {
+            Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
             newTalentTags.add(
                     MemberTalentTag.builder()
@@ -202,9 +192,9 @@ public class MemberService {
         return imageUrl;
     }
 
-    @Transactional(readOnly = true)
-    public Department findDepartment(String deptName) {
-        Department dept = departmentRepository.findByName(deptName).orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_DEPARTMENT));
-        return dept;
-    }
+//    @Transactional(readOnly = true)
+//    public Department findDepartment(String deptName) {
+//        Department dept = departmentRepository.findByName(deptName).orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_DEPARTMENT));
+//        return dept;
+//    }
 }
