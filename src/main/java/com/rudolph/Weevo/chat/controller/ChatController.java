@@ -32,8 +32,8 @@ public class ChatController {
     private final KafkaProducer producer;
 
     @MessageMapping("/chat")
-    public void sendMessage(ChatMessage message, @AuthenticationPrincipal CustomUserPrincipal sender) {
-        Chat chat = chatService.saveMessage(message, sender);
+    public void sendMessage(ChatMessage message, Principal principal) {
+        Chat chat = chatService.saveMessage(message, principal);
         messagingTemplate.convertAndSend("/sub/chat/" + message.getChatRoomId(), chat);
     }
 
