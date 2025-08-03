@@ -70,7 +70,7 @@ public class CourseDetailResponse {
                         .id(course.getTeacher().getId())
                         .nickname(course.getTeacher().getNickName())
                         .college(course.getTeacher().getCollege())
-                        .department(course.getTeacher().getDepartment().getName())
+                        .department(course.getTeacher().getDepartment())
                         .build())
                 .images(imageUrls)
                 .bookmarkCount(bookmarkCnt)

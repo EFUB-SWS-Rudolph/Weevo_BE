@@ -1,6 +1,5 @@
 package com.rudolph.Weevo.member.dto.request;
 
-import com.rudolph.Weevo.member.domain.Department;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -5,5 +5,5 @@ import java.util.List;
 
 @Getter
 public class UpdateTalentTagRequestDto {
-    private List<Long> tagIds;
+    private List<String> tagNames;
 }

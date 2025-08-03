@@ -31,7 +31,7 @@ public class MemberDetailResponse {
 
             return MemberDetailResponse.builder()
                     .nickName(member.getNickName())
-                    .department(member.getDepartment().getName())
+                    .department(member.getDepartment())
                     .profileImage(profileImage)
                     .studentId(member.getStudentId())
                     .talentTags(member.getTalentTags().stream()
