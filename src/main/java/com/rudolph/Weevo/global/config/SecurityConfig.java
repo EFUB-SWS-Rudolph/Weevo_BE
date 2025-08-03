@@ -32,7 +32,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login/oauth2/code/**",
                                 "/auth/login/**",
-                                "/v1/reissue/**"
+                                "/v1/reissue/**",
+                                "/ws/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
