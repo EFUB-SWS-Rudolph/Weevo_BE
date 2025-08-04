@@ -70,7 +70,7 @@ public class MyPageController {
     @Operation(summary = "프로필 이미지 수정", description = "사용자의 프로필 이미지를 변경합니다.")
     @PatchMapping(value = "/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> updateProfileImage(@AuthenticationPrincipal CustomUserPrincipal principal,
-                                                          @RequestPart(value = "image")MultipartFile imageFile) {
+                                                          @RequestPart(value = "image", required = false)MultipartFile imageFile) {
         String imageUrl = memberService.updateProfileImage(principal, imageFile);
         return ApiResponse.onSuccess(SuccessStatus._OK, imageUrl);
     }
