@@ -23,6 +23,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Security;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -91,4 +93,11 @@ public class MyPageController {
 //        SecurityContextHolder.clearContext(); // 현재 세션에서 인증 정보 제거
 //        return ResponseEntity.ok(deleteResult);
 //    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteMember(@AuthenticationPrincipal CustomUserPrincipal principal) {
+        String deleteResult = authService.deleteMember(principal);
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(deleteResult);
+    }
 }
