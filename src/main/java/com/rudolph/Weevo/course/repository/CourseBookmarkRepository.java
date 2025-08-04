@@ -36,5 +36,7 @@ public interface CourseBookmarkRepository extends JpaRepository<CourseBookmark, 
     }
 
     // 6) 사용자가 북마크한 강의 목록 조회
-    List<Course> findAllBookmarkedByMemberId(Long memberId);
+    //List<CourseBookmark> findAllBookmarkedByMemberId(Long memberId);
+    @Query("SELECT cb.course FROM CourseBookmark cb WHERE cb.member.id = :memberId")
+    List<Course> findBookmarkedCoursesByMemberId(@Param("memberId") Long memberId);
 }
