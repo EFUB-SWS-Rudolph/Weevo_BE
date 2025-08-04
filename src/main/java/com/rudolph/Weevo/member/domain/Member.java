@@ -106,7 +106,7 @@ public class Member extends BaseEntity {
         if (dto.getNickname() != null) {
             this.nickName = dto.getNickname();
         }
-        if (department != null) {
+        if (dto.getDept() != null) {
             this.department = dto.getDept();
         }
         if (dto.getStudentId() != null) {
@@ -123,6 +123,9 @@ public class Member extends BaseEntity {
         }
         if (dto.getIsSkillDonation() != null) {
             this.donation = dto.getIsSkillDonation();
+        }
+        if (dto.getCollege() != null) {
+            this.college = dto.getCollege();
         }
 
     }

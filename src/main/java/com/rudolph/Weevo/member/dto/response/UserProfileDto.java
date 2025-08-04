@@ -29,6 +29,7 @@ public class UserProfileDto {
                 .studentId(member.getStudentId() != null ? member.getStudentId() : "")
                 .location(member.getLocation() != null ? member.getLocation() : "")
                 .dept(member.getDepartment() != null ? member.getDepartment() : "")
+                .college(member.getCollege() != null ? member.getCollege() : "")
                 .isCoffeeChat(Boolean.TRUE.equals(member.getCoffeeChat()))
                 .isExchange(Boolean.TRUE.equals(member.getExchange()))
                 .isSkillDonate(Boolean.TRUE.equals(member.getDonation()))
