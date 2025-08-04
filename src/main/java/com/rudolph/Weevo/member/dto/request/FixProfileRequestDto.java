@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class FixProfileRequestDto {
     private String nickname;
     private String dept;
+    private String college;
     private String studentId;
     private String location;
     private Boolean isExchange;

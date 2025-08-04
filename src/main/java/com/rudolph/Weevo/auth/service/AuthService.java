@@ -85,10 +85,10 @@ public class AuthService {
         String url = "https://kapi.kakao.com/v1/user/unlink";
 
         HttpHeaders headers = new HttpHeaders();
-        //headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Authorization", "Bearer " + accessToken);
 
-        HttpEntity<String> request = new HttpEntity<>(headers);
+        HttpEntity<String> request = new HttpEntity<>("", headers);
 
         RestTemplate restTemplate = new RestTemplate();
         try {
