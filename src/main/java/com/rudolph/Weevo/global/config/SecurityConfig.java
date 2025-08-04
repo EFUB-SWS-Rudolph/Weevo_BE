@@ -49,7 +49,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("*"));
+            config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
             config.setAllowCredentials(true);
             return config;
         };
