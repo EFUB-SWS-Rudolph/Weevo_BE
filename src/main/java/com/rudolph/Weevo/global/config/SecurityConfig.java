@@ -32,7 +32,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login/oauth2/code/**",
                                 "/auth/login/**",
-                                "/v1/reissue/**"
+                                "/v1/reissue/**",
+                                "/ws/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -48,7 +49,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("*"));
+            config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
             config.setAllowCredentials(true);
             return config;
         };
