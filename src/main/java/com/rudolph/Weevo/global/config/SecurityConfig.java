@@ -1,5 +1,7 @@
 package com.rudolph.Weevo.global.config;
 
+import com.rudolph.Weevo.global.security.CustomAccessDeniedHandler;
+import com.rudolph.Weevo.global.security.CustomAuthEntryPoint;
 import com.rudolph.Weevo.global.util.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +22,8 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAuthEntryPoint authEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,8 +40,13 @@ public class SecurityConfig {
                                 "/ws/**"
                         ).permitAll()
                         .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                ).exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authEntryPoint)      // 401 처리
+                        .accessDeniedHandler(accessDeniedHandler)
+                );
+
+        http.addFilterBefore(jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
