@@ -26,7 +26,7 @@ import java.security.Principal;
 @RequestMapping("/chat")
 public class ChatController {
 
-    private final SimpMessageSendingOperations messagingTemplate;
+//    private final SimpMessageSendingOperations messagingTemplate;
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
     private final KafkaProducer producer;
@@ -34,7 +34,9 @@ public class ChatController {
     @MessageMapping("/chat")
     public void sendMessage(ChatMessage message, Principal principal) {
         Chat chat = chatService.saveMessage(message, principal);
-        messagingTemplate.convertAndSend("/sub/chat/" + message.getChatRoomId(), chat);
+        ChatMessage responseDto = ChatMessage.from(chat, message.getReceiverId());
+//        messagingTemplate.convertAndSend("/sub/chat/" + message.getChatRoomId(), responseDto);
+        producer.sendMessage(responseDto);
     }
 
     // 채팅방 존재 여부
