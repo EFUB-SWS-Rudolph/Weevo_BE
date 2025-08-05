@@ -19,12 +19,12 @@ public class KafkaConsumer {
     private final ChatService chatService;
 
     @KafkaListener(groupId = "${spring.kafka.consumer.group-id}", topics="${message.topic.name}")
-    public void listenChat(ChatMessage chatMessage){
-        log.info("Received message: {}", chatMessage.getContent());
+    public void listenChat(ChatMessage message){
+        log.info("Received message: {}", message.getContent());
         try {
-            Chat chat = chatService.findLatestByChatRoomAndSender(chatMessage.getChatRoomId(), chatMessage.getSenderId(), chatMessage.getContent());
+            Chat chat = chatService.findLatestByChatRoomAndSender(message.getChatRoomId(), message.getSenderId(), message.getContent());
             MessageSummary summary = MessageSummary.from(chat);
-            template.convertAndSend("/sub/chat/" + chatMessage.getChatRoomId(), summary);
+            template.convertAndSend("/sub/chat/" + message.getChatRoomId(), summary);
             log.info("Message sent to WebSocket via STOMP");
         } catch (Exception e) {
             log.error("Error sending message to WebSocket", e);
