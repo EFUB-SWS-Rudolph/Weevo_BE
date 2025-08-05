@@ -34,7 +34,8 @@ public class ChatController {
     @MessageMapping("/chat")
     public void sendMessage(ChatMessage message, Principal principal) {
         Chat chat = chatService.saveMessage(message, principal);
-        messagingTemplate.convertAndSend("/sub/chat/" + message.getChatRoomId(), chat);
+        ChatMessage responseDto = ChatMessage.from(chat, message.getReceiverId());
+        messagingTemplate.convertAndSend("/sub/chat/" + message.getChatRoomId(), responseDto);
     }
 
     // 채팅방 존재 여부
