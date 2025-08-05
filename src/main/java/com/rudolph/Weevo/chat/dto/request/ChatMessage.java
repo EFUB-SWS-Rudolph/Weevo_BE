@@ -20,7 +20,7 @@ public class ChatMessage {
 
     public static ChatMessage from (Chat chat, Long receiverId){
         return ChatMessage.builder()
-                .chatRoomId(chat.getId())
+                .chatRoomId(chat.getChatRoom().getId())
                 .senderId(chat.getSender().getId())
                 .receiverId(receiverId)
                 .content(chat.getContent())
