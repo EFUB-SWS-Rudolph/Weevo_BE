@@ -26,18 +26,18 @@ public class ChatMessageResponseDto {
                                               Member opponent,
                                               Course course,
                                               List<Chat> chatMessages) {
-
-        String thumbnailImageUrl = course.getCourseImages().stream()
-                .filter(CourseImage::isThumbnail)
-                .map(CourseImage::getCourseImgUrl)
-                .findFirst()
-                .orElse(null);
-
         return ChatMessageResponseDto.builder()
                 .chatRoomId(chatRoomId)
                 .opponent(OpponentSummary.from(opponent))
-                .course(CourseSummary.from(course, thumbnailImageUrl))
-                .messages(chatMessages.stream().map(MessageSummary::from).collect(Collectors.toList()))
+                .course(course == null ? null : CourseSummary.from(course,
+                        course.getCourseImages().stream()
+                                .filter(CourseImage::isThumbnail)
+                                .map(CourseImage::getCourseImgUrl)
+                                .findFirst()
+                                .orElse(null)))
+                .messages(chatMessages.stream()
+                        .map(MessageSummary::from)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
