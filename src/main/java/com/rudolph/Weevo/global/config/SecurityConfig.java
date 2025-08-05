@@ -33,7 +33,8 @@ public class SecurityConfig {
                                 "/login/oauth2/code/**",
                                 "/auth/login/**",
                                 "/v1/reissue/**",
-                                "/ws/**"
+                                "/ws/**",
+                                "/sub/**", "/pub/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
