@@ -8,19 +8,19 @@ import com.rudolph.Weevo.chat.dto.response.*;
 import com.rudolph.Weevo.chat.service.ChatRoomService;
 import com.rudolph.Weevo.chat.service.ChatService;
 import com.rudolph.Weevo.chat.service.kafka.KafkaProducer;
-import com.rudolph.Weevo.member.domain.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
