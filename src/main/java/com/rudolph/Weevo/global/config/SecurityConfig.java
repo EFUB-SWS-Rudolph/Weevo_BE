@@ -38,11 +38,14 @@ public class SecurityConfig {
                                 "/auth/login/**",
                                 "/v1/reissue/**",
                                 "/ws/**",
-                                "/sub/**", "/pub/**"
+                                "/sub/**",
+                                "/pub/**",
+                                "/ws/**",
+                                "/error"
                         ).permitAll()
                         .anyRequest().authenticated()
                 ).exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(authEntryPoint)      // 401 처리
+                        .authenticationEntryPoint(authEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 );
 
