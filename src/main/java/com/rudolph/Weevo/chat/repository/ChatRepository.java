@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
@@ -33,4 +35,6 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
             AND c.isRead = false
     """)
     void markAllUnreadMessagesAsRead(@Param("chatRoomId") Long chatRoomId, @Param("receiverId") Long receiverId);
+
+    Chat findFirstByChatRoomIdAndSenderIdAndContentOrderBySentAtDesc(Long chatRoomId, Long senderId, String content);
 }
