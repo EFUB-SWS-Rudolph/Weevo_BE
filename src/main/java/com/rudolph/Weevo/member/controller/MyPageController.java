@@ -23,6 +23,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Security;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -68,7 +70,7 @@ public class MyPageController {
     @Operation(summary = "프로필 이미지 수정", description = "사용자의 프로필 이미지를 변경합니다.")
     @PatchMapping(value = "/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> updateProfileImage(@AuthenticationPrincipal CustomUserPrincipal principal,
-                                                          @RequestPart(value = "image")MultipartFile imageFile) {
+                                                          @RequestPart(value = "image", required = false)MultipartFile imageFile) {
         String imageUrl = memberService.updateProfileImage(principal, imageFile);
         return ApiResponse.onSuccess(SuccessStatus._OK, imageUrl);
     }
@@ -91,4 +93,11 @@ public class MyPageController {
 //        SecurityContextHolder.clearContext(); // 현재 세션에서 인증 정보 제거
 //        return ResponseEntity.ok(deleteResult);
 //    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteMember(@AuthenticationPrincipal CustomUserPrincipal principal) {
+        String deleteResult = authService.deleteMember(principal);
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(deleteResult);
+    }
 }

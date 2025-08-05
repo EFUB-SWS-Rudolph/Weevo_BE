@@ -295,7 +295,7 @@ public class CourseService {
     public MyCourseListDto getMyBookmarkCourses(Long memberId) {
 
         //찜한 강의 목록
-        List<Course> bookmarkedCourses = bookmarkRepository.findAllBookmarkedByMemberId(memberId);
+        List<Course> bookmarkedCourses = bookmarkRepository.findBookmarkedCoursesByMemberId(memberId);
         return MyCourseListDto.from(bookmarkedCourses);
     }
 

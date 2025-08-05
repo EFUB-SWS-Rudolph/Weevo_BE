@@ -187,6 +187,10 @@ public class MemberService {
         Long memberId = principal.getMemberId();
         Member member = findMember(memberId);
 
+        //이미지 없을 경우 기본 이미지 url 그대로 사용
+        if (imageFile == null || imageFile.isEmpty()) {
+            return member.getProfileImage();
+        }
         String imageUrl = s3Service.uploadFile(imageFile, "/profile" + memberId);
         member.updateProfileImage(imageUrl);
         return imageUrl;
