@@ -3,10 +3,14 @@ package com.rudolph.Weevo.chat.dto.request;
 import com.rudolph.Weevo.chat.domain.Chat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ChatMessage {
     @NotNull

@@ -1,4 +1,4 @@
-package com.rudolph.Weevo.global.config;
+package com.rudolph.Weevo.global.config.kafka;
 
 import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

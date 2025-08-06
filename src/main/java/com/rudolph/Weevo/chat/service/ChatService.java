@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +34,7 @@ public class ChatService {
     private final NotificationService notificationService;
     private final ChatRepository chatRepository;
 
-    public Chat saveMessage(ChatMessage message, Principal principal) {
+    public void saveMessage(ChatMessage message, Principal principal) {
         Long senderId = ((CustomUserPrincipal) ((Authentication) principal).getPrincipal()).getMemberId();
         Member sender = memberService.findMember(senderId);
         Member receiver = memberService.findMember(message.getReceiverId());
@@ -50,7 +49,7 @@ public class ChatService {
                 .content(message.getContent())
                 .isRead(false)
                 .build();
-        return chatRepository.save(chat);
+        chatRepository.save(chat);
     }
 
     // 채팅방 내 메세지 읽어오기
@@ -75,5 +74,9 @@ public class ChatService {
                 chatRoom.getCourse(),
                 chatMessages
         );
+    }
+
+    public Chat findLatestByChatRoomAndSender(Long chatRoomId, Long senderId, String content) {
+        return chatRepository.findFirstByChatRoomIdAndSenderIdAndContentOrderBySentAtDesc(chatRoomId, senderId, content);
     }
 }

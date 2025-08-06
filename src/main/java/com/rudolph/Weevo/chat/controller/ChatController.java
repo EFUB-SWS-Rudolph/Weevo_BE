@@ -1,7 +1,6 @@
 package com.rudolph.Weevo.chat.controller;
 
 import com.rudolph.Weevo.auth.security.CustomUserPrincipal;
-import com.rudolph.Weevo.chat.domain.Chat;
 import com.rudolph.Weevo.chat.dto.request.ChatMessage;
 import com.rudolph.Weevo.chat.dto.request.ChatRoomCreateRequestDto;
 import com.rudolph.Weevo.chat.dto.response.*;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,17 +24,14 @@ import java.security.Principal;
 @RequestMapping("/chat")
 public class ChatController {
 
-//    private final SimpMessageSendingOperations messagingTemplate;
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
     private final KafkaProducer producer;
 
     @MessageMapping("/chat")
     public void sendMessage(ChatMessage message, Principal principal) {
-        Chat chat = chatService.saveMessage(message, principal);
-        ChatMessage responseDto = ChatMessage.from(chat, message.getReceiverId());
-//        messagingTemplate.convertAndSend("/sub/chat/" + message.getChatRoomId(), responseDto);
-        producer.sendMessage(responseDto);
+        chatService.saveMessage(message, principal);
+        producer.sendMessage(message);
     }
 
     // 채팅방 존재 여부
