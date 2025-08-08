@@ -26,7 +26,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // WebSocket 핸드셰이크를 하기 위해 연결할 endpoint
-        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("http://localhost:5173", "https://weevo.netlify.app");
     }
 
     @Override

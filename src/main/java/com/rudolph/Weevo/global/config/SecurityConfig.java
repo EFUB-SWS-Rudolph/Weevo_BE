@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
@@ -62,7 +63,11 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
+            config.setAllowedOrigins(List.of(
+                    "http://localhost:5173",              // 개발용
+                    "https://weevo.netlify.app"           // 배포용
+            ));
+
             config.setAllowCredentials(true);
             return config;
         };
