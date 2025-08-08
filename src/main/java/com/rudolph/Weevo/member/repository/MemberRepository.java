@@ -4,6 +4,7 @@ import com.rudolph.Weevo.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -12,5 +13,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     Optional<Member> findByProviderId(String providerId);
     //회원 ID로 조회
     Optional<Member> findById(Long id);
+
+    List<Member> findByNickNameContaining(String keyword);
+    List<Member> findByDepartmentContaining(String keyword);
 
 }
