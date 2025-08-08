@@ -20,13 +20,12 @@
         // 강의
         COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 강의입니다."),
         INVALID_SORT(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 sort 값입니다. (latest, popular)"),
-        UNAUTHORIZED_COURSE_CONFIRM(HttpStatus.UNAUTHORIZED, "401", "해당 강의를 성사시킬 권한이 없습니다."),
         COURSE_ALREADY_CONFIRMED(HttpStatus.BAD_REQUEST, "400", "이미 성사된 수강자입니다."),
         COURSE_CANCEL_ALREADY_REQUESTED(HttpStatus.BAD_REQUEST, "400", "이미 취소 요청을 완료했습니다."),
         MEMBERCOURSE_NOT_FOUND       (HttpStatus.NOT_FOUND , "404", "수강 이력이 존재하지 않습니다."),
+        CANNOT_ENROLL_OWN_COURSE     (HttpStatus.FORBIDDEN , "403", "본인 강의에는 참여할 수 없습니다."),
 
         // 검색
-
         KEYWORD_REQUIRED (HttpStatus.BAD_REQUEST, "K001", "검색어를 입력해 주세요."),
         KEYWORD_TOO_LONG  (HttpStatus.BAD_REQUEST, "K002", "검색어가 너무 깁니다. (최대 50자)"),
 
