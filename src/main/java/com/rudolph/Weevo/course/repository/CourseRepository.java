@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecificationExecutor<Course> {
     List<Course> findAllByCourseCategoryIn(List<CourseCategory> categories);
+    List<Course> findByTitleContainingIgnoreCase(String keyword);
 }
