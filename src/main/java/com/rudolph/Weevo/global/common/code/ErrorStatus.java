@@ -25,6 +25,10 @@
         COURSE_CANCEL_ALREADY_REQUESTED(HttpStatus.BAD_REQUEST, "400", "이미 취소 요청을 완료했습니다."),
         MEMBERCOURSE_NOT_FOUND       (HttpStatus.NOT_FOUND , "404", "수강 이력이 존재하지 않습니다."),
 
+        // 검색
+
+        KEYWORD_REQUIRED (HttpStatus.BAD_REQUEST, "K001", "검색어를 입력해 주세요."),
+        KEYWORD_TOO_LONG  (HttpStatus.BAD_REQUEST, "K002", "검색어가 너무 깁니다. (최대 50자)"),
 
         //추가 회원가입 에러
         // === 추가정보 입력 관련 에러 ===
