@@ -80,17 +80,16 @@ public class CourseController {
     }
 
     // 7) 강의 성사
-    @PostMapping("/confirm/{courseId}/{memberId}")
+    @PostMapping("/confirm/{courseId}")
     public ResponseEntity<ApiResponse<Map<String, Object>>> confirmCourse(
             @PathVariable Long courseId,
-            @PathVariable Long memberId,
             @AuthenticationPrincipal CustomUserPrincipal user
     ) {
-        courseService.confirmCourse(courseId, user.getMemberId(), memberId);
+        courseService.confirmCourse(courseId, user.getMemberId());
 
         Map<String, Object> resp = Map.of(
                 "courseId",   courseId,
-                "studentId",  memberId,
+                "studentId",  user.getMemberId(),
                 "confirmedAt", java.time.LocalDateTime.now()
         );
         return ApiResponse.onSuccess(SuccessStatus._OK, resp);

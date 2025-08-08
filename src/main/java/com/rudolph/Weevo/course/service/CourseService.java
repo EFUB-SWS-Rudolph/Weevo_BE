@@ -193,32 +193,33 @@ public class CourseService {
 
     // 7) 강의 성사
     @Transactional
-    public void confirmCourse(Long courseId, Long teacherId, Long studentId) {
+    public void confirmCourse(Long courseId, Long memberId) {
 
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.COURSE_NOT_FOUND));
 
-        // 진행자 권한 검증
-        if (!course.getTeacher().getId().equals(teacherId)) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED_COURSE_CONFIRM);
+        // 수강자‧교사 조회
+        Member student = memberService.findMember(memberId);
+        Member teacher = memberService.findMember(course.getTeacher().getId());
+
+        // 1) 수강자가 교사 본인인지 여부
+        if (teacher.getId().equals(memberId)) {
+            throw new GeneralException(ErrorStatus.CANNOT_ENROLL_OWN_COURSE);
         }
 
-        // 수강자 조회
-        Member student = memberService.findMember(studentId);
-        //진행자 조회
-        Member teacher = memberService.findMember(teacherId);
-
-        // 중복 확인
+        // 이미 신청했는지 중복 확인
         boolean exists = course.getMemberCourses().stream()
-                .anyMatch(mc -> mc.getMember().getId().equals(studentId));
+                .anyMatch(mc -> mc.getMember().getId().equals(memberId));
         if (exists) throw new GeneralException(ErrorStatus.COURSE_ALREADY_CONFIRMED);
 
         MemberCourse mc = MemberCourse.of(student, course);
         course.getMemberCourses().add(mc);
 
         courseRepository.save(course);
-        notificationService.createNotification(NotiType.COURSE_MATCHED, teacher, student, course.getTitle());
+        notificationService.createNotification(
+                NotiType.COURSE_MATCHED, teacher, student, course.getTitle());
     }
+
 
     // 8) 내 강의 조회
     @Transactional(readOnly = true)
