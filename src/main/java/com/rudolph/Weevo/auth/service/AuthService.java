@@ -8,6 +8,8 @@ import com.rudolph.Weevo.member.repository.MemberRepository;
 import com.rudolph.Weevo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +21,22 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class AuthService {
 
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final RestTemplate restTemplate;
+
+    @Value("${KAKAO_ADMIN_KEY}")
+    private String kakaoAdminKey;
+
+    public AuthService(MemberService memberService, MemberRepository memberRepository, RestTemplateBuilder restTemplateBuilder) {
+        this.memberService = memberService;
+        this.memberRepository = memberRepository;
+        this.restTemplate = restTemplateBuilder.build();
+    }
+
 
     @Transactional
     public void logout(CustomUserPrincipal principal, String accessToken) {
@@ -66,6 +79,7 @@ public class AuthService {
             Member member = memberService.findMember(principal.getMemberId());
             String provider = member.getProvider();
             log.info(provider);
+            unlinkKakaoUser(member.getProviderId());
             memberRepository.deleteById(member.getId());
             return "회원탈퇴 성공";
         } catch (Exception e) {
@@ -74,6 +88,7 @@ public class AuthService {
         }
     }
 
+//    회원탈퇴 - kakao access token 으로 수행하는 방법
 //    @Transactional
 //    public String deleteMember(CustomUserPrincipal principal, String accessToken) {
 //        try {
@@ -143,4 +158,28 @@ public class AuthService {
 //            throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
 //        }
 //    }
+
+    // 카카오 unlink adminKey로 수행하기
+    public String unlinkKakaoUser(String  userId) {
+        String url = "https://kapi.kakao.com/v1/user/unlink";
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "KakaoAK " + kakaoAdminKey);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("target_id_type", "user_id");
+        params.add("target_id", userId);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+        if(response.getStatusCode() == HttpStatus.OK) {
+            log.info("카카오 연결 해제 성공: {}", response.getBody());
+            return "카카오 연결 해제 성공";
+        }else {
+            log.warn("카카오 연결 해제 실패: {} / 응답: {}", response.getStatusCode(), response.getBody());
+            return "카카오 연결 해제 실패: " + response.getStatusCode();
+        }
+    }
 }
+
